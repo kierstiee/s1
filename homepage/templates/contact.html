@@ -1,0 +1,23 @@
+<%inherit file="app_base.htm" />
+
+<%block name="menu">
+    <div class="menu">contact</div>
+</%block>
+
+<%block name="content">
+    <div class="content">
+        <form align="center" action="/homepage/contact/" method="post">
+            ${ csrf_input }
+            First Name:<br>
+            <input type="text" name="firstname" placeholder="e.g. Mary"><br>
+            Last Name:<br>
+            <input type="text" name="lastname" placeholder="e.g. Smith"><br>
+            Email:<br>
+            <input type="text" name="email" placeholder="e.g. email@fomo.com"><br>
+            Comment: <br>
+            <textarea type="text" name="comment" cols="55" rows="6"></textarea>
+            <br><br>
+            <input type="submit" name="submit" value="Submit Comment">
+        </form>
+    </div>
+</%block>
