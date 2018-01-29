@@ -38,7 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_mako_plus',
+    'django_mako_plus',             # custom router
+    'cuser',                        # uses email field for unique user identifier
+    'account',
+    # 'formlib',
     'homepage',
 ]
 
@@ -152,6 +155,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'account.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
