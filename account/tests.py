@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from account import models as amod
@@ -50,11 +50,13 @@ class UserClassTestCase(TestCase):
 
     def test_log_in(self):
         """Test logging in"""
-
+        c = Client()
+        log_in = c.login(username = self.u1.email, password = self.u1.password)
 
     def test_logout(self):
         """Test logout"""
-
+        c = Client()
+        log_out = c.logout()
 
     def test_password(self):
         """Testing the password"""
