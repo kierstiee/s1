@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_mako_plus',             # custom router
     'cuser',                        # uses email field for unique user identifier
     'account',
+    'templates',
     'homepage',
 ]
 
@@ -128,7 +129,7 @@ TEMPLATES = [
     {
         'NAME': 'django',
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -226,4 +227,4 @@ LOGGING = {
     },
 }
 
-
+LOGIN_REDIRECT_URL = '/'
