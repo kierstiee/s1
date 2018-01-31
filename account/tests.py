@@ -50,3 +50,23 @@ class UserClassTestCase(TestCase):
 
     def test_log_in(self):
         """Test logging in"""
+
+
+    def test_logout(self):
+        """Test logout"""
+
+
+    def test_password(self):
+        """Testing the password"""
+        self.u1.set_password("doublecheck")
+        self.u1.check_password("doublecheck")
+
+
+    def test_changes(self):
+        """Test random changes"""
+        self.u1.first_name='Martha'
+        self.assertEqual('Martha', self.u1.first_name)
+        self.u1.last_name='Stewart'
+        self.assertEqual('Stewart', self.u1.last_name)
+        self.u1.address='456 Circle Lane'
+        self.assertEqual('456 Circle Lane', self.u1.address)
