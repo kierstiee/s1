@@ -74,9 +74,10 @@ class UserClassTestCase(TestCase):
 
         self.assertFalse(self.u1.is_anonymous)
 
-    # def test_logout(self):
-    #     """Test logout"""
-    #     logout(self.u1)
+    # def test_log_out(self):
+    #     """Test logging out"""
+    #     logout(self)
+    #
     #     self.assertTrue(self.u1.is_anonymous)
 
     def test_password(self):
