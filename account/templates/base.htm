@@ -4,27 +4,39 @@
     <meta charset="UTF-8">
     <head>
 
-        <title>DMP</title>
+        <title>FOMO</title>
 
         ## add any site-wide scripts or CSS here; for example, jquery:
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
         ## render the static file links with the same name as this template
         <script src="/django_mako_plus/dmp-common.min.js"></script>
-        ${ django_mako_plus.links(self) }
+        <script src="${ STATIC_URL }homepage/media/bootstrap/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="${ STATIC_URL }homepage/media/bootstrap/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="${ STATIC_URL }homepage/media/bootstrap/css/bootstrap-theme.min.css"/>
+        <link rel="icon" href="${ STATIC_URL }homepage/media/piano_icon.png">
+        ${ django_mako_plus.links(self) } <!--G1-->
 
     </head>
     <body>
+        <%block name="maintenance">Something</%block>
 
         <header>
-            <h1>Welcome to the your new app!<h1>
+            <nav class="navbar navbar-default">
+                <%block name="navigate"></%block>
+            </nav>
         </header>
 
         <main>
-            <%block name="content">
-                Site content goes here in sub-templates.
+            <%block name="columns">
             </%block>
         </main>
 
     </body>
+
+    <footer align="middle">
+        &copy; <script type="text/javascript">
+            document.write(new Date().getFullYear());
+        </script>
+    </footer>
 </html>
