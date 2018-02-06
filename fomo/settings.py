@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django_mako_plus',             # custom router
     'cuser',                        # uses email field for unique user identifier
     'account',
+    'formlib',
     'templates',
     'homepage',
 ]
