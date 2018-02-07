@@ -1,9 +1,9 @@
-<%inherit file="account/templates/app_base.htm/"
+<%inherit file="app_base.htm" />
 
-<%block name = "content_top" method='POST'>
+<%block name = "content">
 
-    <form action=""/>account/testform/">
-        $ {csrf_input }
+    <form action="account/testform/" method='POST'/>
+        $ { csrf_input }
         ${ form.as_p() }
         <input type="submit" value="submit" />
     </form>

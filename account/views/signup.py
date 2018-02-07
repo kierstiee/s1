@@ -19,26 +19,24 @@ def process_request(request):
             return HttpResponseRedirect('/account/index/')
     else:
         form = SignupForms()
+
     context = {
-        'form':form,
+        'myform': form,
     }
     return request.dmp_render('signup.html', context)
 
 
 class SignupForms(forms.Form):
-    def __init__(self):
-
-        email = forms.EmailField(label='Email')
-        first_name = forms.CharField(label='First Name')
-        last_name = forms.CharField(label='Last Name')
-        password = forms.CharField(widget=forms.PasswordInput(), label='Password')
-        password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
-        self.user = None
+    email = forms.EmailField(label='Email')
+    first_name = forms.CharField(label='First Name')
+    last_name = forms.CharField(label='Last Name')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+    password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
 
     def clean_password(self):
-        password = self.cleaned_data.get('password')
-        has_digit = any([c.isdigit() for c in password])
-        if len(password) < 8:
+        p1 = self.cleaned_data['password']
+        has_digit = any([c.isdigit() for c in p1])
+        if len(p1) < 8:
             raise forms.ValidationError('Password must have at least 8 characters. Please try again.')
         elif not has_digit:
             raise forms.ValidationError('Password must have a number. Please try again.')
@@ -46,24 +44,15 @@ class SignupForms(forms.Form):
 
     def clean(self):
         # double password
-        password = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
-        # email = self.cleaned_data.get('Email')
-        # first = self.cleaned_data.get('First Name')
-        # last = self.cleaned_data.get('Last Name')
-        #
-        # if not first:
-        #     raise forms.ValidationError('Please fill all fields')
-        # elif not last:
-        #     raise forms.ValidationError('Please fill all fields')
+        password = self.cleaned_data['password']
+        password2 = self.cleaned_data['password2']
         check = re.fullmatch(password,password2)
         if check is not None:
             raise forms.ValidationError('Passwords do not match. Please try again.')
         return self.cleaned_data
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-
+        email = self.cleaned_data['email']
         if amod.User.objects.filter(email).exists():
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
         return self.cleaned_data

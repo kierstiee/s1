@@ -1,10 +1,10 @@
 <%inherit file="account/templates/app_base.htm/" />
 
-<%block name = "content_top" >
+<%block name = "content" >
 
     <form action="account/login/" method='POST'/>
         $ { csrf_input }
-        ${ form.as_p() }
+        ${ myform.as_p() }
         <input type="submit" value="Log in" />
     </form>
 
