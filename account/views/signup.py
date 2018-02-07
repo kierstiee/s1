@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django_mako_plus import view_function
 from account import models as amod
+from django.contrib.auth import login
+import re
 
 
 @view_function
@@ -24,15 +26,16 @@ def process_request(request):
 
 
 class SignupForms(forms.Form):
-    u1 = amod.User()
-    u1.first_name = forms.CharField(label='First Name')
-    u1.last_name = forms.CharField(label='Last Name')
-    u1.email = forms.EmailField(label='Email')
-    u1.password = forms.CharField(widget=forms.PasswordInput(), label='Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
+    def __init__(self):
+        self.fields['email'] = forms.EmailField(label='Email')
+        self.fields['first_name'] = forms.CharField(label='First Name')
+        self.fields['last_name'] = forms.CharField(label='Last Name')
+        self.fields['password'] = forms.CharField(widget=forms.PasswordInput(), label='Password')
+        self.fields['password2'] = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
+        self.user = None
 
     def clean_password(self):
-        password = self.cleaned_data.get('Password')
+        password = self.cleaned_data.get('password')
         has_digit = any([c.isdigit() for c in password])
         if len(password) < 8:
             raise forms.ValidationError('Password must have at least 8 characters. Please try again.')
@@ -42,8 +45,8 @@ class SignupForms(forms.Form):
 
     def clean(self):
         # double password
-        password = self.cleaned_data.get('Password')
-        password2 = self.cleaned_data.get('Repeat Password')
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
         # email = self.cleaned_data.get('Email')
         # first = self.cleaned_data.get('First Name')
         # last = self.cleaned_data.get('Last Name')
@@ -52,12 +55,28 @@ class SignupForms(forms.Form):
         #     raise forms.ValidationError('Please fill all fields')
         # elif not last:
         #     raise forms.ValidationError('Please fill all fields')
-        if password != password2:
+        check = re.fullmatch(password,password2)
+        if check is not None:
             raise forms.ValidationError('Passwords do not match. Please try again.')
         return self.cleaned_data
 
     def clean_email(self):
-        email = self.cleaned_data.get('Email')
+        email = self.cleaned_data.get('email')
+
         if amod.User.objects.filter(email).exists():
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
         return self.cleaned_data
+
+    def commit(self):
+        """Process the form action"""
+        u1 = amod.User.objects.create_user()
+        u1.email = self.user.email
+        u1.password = self.user.password
+        u1.first_name = self.user.first_name
+        u1.last_name = self.user.last_name
+        u1.save()
+
+        login(self.request, u1)
+        # create user object
+        # save
+        # login()
