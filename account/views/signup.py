@@ -13,7 +13,7 @@ def process_request(request):
         if form.is_valid():
             # once we're here, everything is clean. No more data changes
             # do work of form (e.g., make payment, create user)
-            newUser = CommitUser(form)
+
             return HttpResponseRedirect('/account/index/')
     else:
         form = SignupForms()
@@ -44,15 +44,15 @@ class SignupForms(forms.Form):
         # double password
         password = self.cleaned_data.get('Password')
         password2 = self.cleaned_data.get('Repeat Password')
-        email = self.cleaned_data.get('Email')
-        first = self.cleaned_data.get('First Name')
-        last = self.cleaned_data.get('Last Name')
-
-        if not first:
-            raise forms.ValidationError('Please fill all fields')
-        elif not last:
-            raise forms.ValidationError('Please fill all fields')
-        elif password != password2:
+        # email = self.cleaned_data.get('Email')
+        # first = self.cleaned_data.get('First Name')
+        # last = self.cleaned_data.get('Last Name')
+        #
+        # if not first:
+        #     raise forms.ValidationError('Please fill all fields')
+        # elif not last:
+        #     raise forms.ValidationError('Please fill all fields')
+        if password != password2:
             raise forms.ValidationError('Passwords do not match. Please try again.')
         return self.cleaned_data
 
@@ -61,8 +61,3 @@ class SignupForms(forms.Form):
         if amod.User.objects.filter(email).exists():
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
         return self.cleaned_data
-
-class CommitUser(forms.Form):
-    def commit(self):
-        self.u1.save()
-
