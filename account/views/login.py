@@ -19,7 +19,7 @@ def process_request(request):
         context = {
             'form':form,
         }
-    return request.dmp_render('testform.html', context)
+    return request.dmp_render('login.html', context)
 
 class TestForm(forms.Form):
     favorite_ice_cream = forms.CharField(label = 'Favorite Ice Cream')

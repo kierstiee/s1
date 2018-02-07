@@ -12,15 +12,15 @@ def process_request(request):
         form = SignupForms(request.POST)
         if form.is_valid():
             # once we're here, everything is clean. No more data changes
-
             # do work of form (e.g., make payment, create user)
-            return HttpResponseRedirect('/')
+            newUser = CommitUser(form)
+            return HttpResponseRedirect('/account/index/')
     else:
         form = SignupForms()
     context = {
         'form':form,
     }
-    return request.dmp_render('testform.html', context)
+    return request.dmp_render('signup.html', context)
 
 
 class SignupForms(forms.Form):
@@ -38,8 +38,7 @@ class SignupForms(forms.Form):
             raise forms.ValidationError('Password must have at least 8 characters. Please try again.')
         elif not has_digit:
             raise forms.ValidationError('Password must have a number. Please try again.')
-        else:
-            return password
+        return self.cleaned_data
 
     def clean(self):
         # double password
@@ -59,12 +58,11 @@ class SignupForms(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get('Email')
-        if email # not in db:
+        if amod.User.objects.filter(email).exists():
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
+        return self.cleaned_data
 
+class CommitUser(forms.Form):
     def commit(self):
-        try:
-            # create user
-        except Exception as e:
-            print(e)
-        # log in
+        self.u1.save()
+

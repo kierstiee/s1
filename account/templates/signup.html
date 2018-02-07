@@ -1,0 +1,11 @@
+<%inherit file="account/templates/app_base.htm/"
+
+<%block name = "context_top" method='POST'>
+
+    <form action=""/>account/signup/">
+        $ {csrf_input }
+        ${ form.as_p() }
+        <input type="submit" value="register" />
+    </form>
+
+</%block>
