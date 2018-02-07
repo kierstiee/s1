@@ -27,11 +27,12 @@ def process_request(request):
 
 class SignupForms(forms.Form):
     def __init__(self):
-        self.fields['email'] = forms.EmailField(label='Email')
-        self.fields['first_name'] = forms.CharField(label='First Name')
-        self.fields['last_name'] = forms.CharField(label='Last Name')
-        self.fields['password'] = forms.CharField(widget=forms.PasswordInput(), label='Password')
-        self.fields['password2'] = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
+
+        email = forms.EmailField(label='Email')
+        first_name = forms.CharField(label='First Name')
+        last_name = forms.CharField(label='Last Name')
+        password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+        password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
         self.user = None
 
     def clean_password(self):
@@ -70,10 +71,10 @@ class SignupForms(forms.Form):
     def commit(self):
         """Process the form action"""
         u1 = amod.User.objects.create_user()
-        u1.email = self.user.email
-        u1.password = self.user.password
-        u1.first_name = self.user.first_name
-        u1.last_name = self.user.last_name
+        u1.email = self.email
+        u1.password = self.password
+        u1.first_name = self.first_name
+        u1.last_name = self.last_name
         u1.save()
 
         login(self.request, u1)

@@ -22,8 +22,8 @@ def process_request(request):
 
 class LoginForm(forms.Form):
     def __init__(self):
-        self.fields['email'] = forms.EmailField(label='Email')
-        self.fields['password'] = forms.CharField(widget=forms.PasswordInput(), label='Password')
+        email = forms.EmailField(label='Email')
+        password = forms.CharField(widget=forms.PasswordInput(), label='Password')
         self.user = None
 
     def clean(self):

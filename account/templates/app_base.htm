@@ -1,4 +1,4 @@
-<%inherit file="homepage/templates/base.htm" />
+<%inherit file="/homepage/templates/base.htm" />
 
 <%block name="maintenance">
     <h4 align="center">We're currently upgrading our site for your benefit</h4>
@@ -50,6 +50,16 @@
                 <li class="home"><a href="/homepage/contact/">Contact Us</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                %if request.user.is_authenticated:
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">Welcome!<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/account/account/">My Account</a></li>
+                            <li><a href="/account/logout/">Logout</a></li>
+                        </ul>
+                    </li>
+                %endif
                 %if not request.user.is_authenticated:
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -59,15 +69,6 @@
                         <li><a href="/account/signup/">Signup</a></li>
                     </ul>
                 </li>
-                %else
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                           aria-expanded="false">Welcome!<span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/account/account/">My Account</a></li>
-                            <li><a href="/account/logout/">Logout</a></li>
-                        </ul>
-                    </li>
                 %endif
             </ul>
         </div><!-- /.navbar-collapse -->
