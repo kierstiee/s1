@@ -15,7 +15,7 @@ def process_request(request):
         if form.is_valid():
             # once we're here, everything is clean. No more data changes
             # do work of form (e.g., make payment, create user)
-
+            form.commit()
             return HttpResponseRedirect('/account/index/')
     else:
         form = SignupForms()
@@ -30,11 +30,12 @@ class SignupForms(forms.Form):
     email = forms.EmailField(label='Email')
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
-    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
-    password2 = forms.CharField(widget=forms.PasswordInput(), label='Repeat password')
+    password = forms.CharField(widget=forms.PasswordInput, label='Password')
+    password2 = forms.CharField(widget=forms.PasswordInput, label='Repeat password')
+    u1 = amod.User.objects.create(email=email, first_name = first_name, last_name=last_name,password=password)
 
     def clean_password(self):
-        p1 = self.cleaned_data['password']
+        p1 = self.cleaned_data.get('password')
         has_digit = any([c.isdigit() for c in p1])
         if len(p1) < 8:
             raise forms.ValidationError('Password must have at least 8 characters. Please try again.')
@@ -44,29 +45,28 @@ class SignupForms(forms.Form):
 
     def clean(self):
         # double password
-        password = self.cleaned_data['password']
-        password2 = self.cleaned_data['password2']
-        check = re.fullmatch(password,password2)
-        if check is not None:
+        password1 = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
+        if password1 == password2:
+            return self.cleaned_data
+        else:
             raise forms.ValidationError('Passwords do not match. Please try again.')
-        return self.cleaned_data
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if amod.User.objects.filter(email).exists():
-            raise forms.ValidationError('This email is already registered. Do you have an account already?')
-        return self.cleaned_data
+    # def clean_email(self):
+    #     email = self.cleaned_data.get('email')
+    #     if amod.User.objects.filter(email).exists():
+    #         raise forms.ValidationError('This email is already registered. Do you have an account already?')
+    #     return self.cleaned_data
 
     def commit(self):
         """Process the form action"""
-        u1 = amod.User.objects.create_user()
-        u1.email = self.email
-        u1.password = self.password
-        u1.first_name = self.first_name
-        u1.last_name = self.last_name
-        u1.save()
+        self.u1.email = self.email
+        self.u1.password = self.password
+        self.u1.first_name = self.first_name
+        self.u1.last_name = self.last_name
+        self.u1.save()
 
-        login(self.request, u1)
+        login(self, self.u1)
         # create user object
         # save
         # login()

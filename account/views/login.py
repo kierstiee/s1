@@ -12,10 +12,10 @@ def process_request(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            # once we're here, everything is clean. No more data changes
-            # do work of form (e.g., make payment, create user)
-
-            return HttpResponseRedirect('/account/index/')
+            # email = form.cleaned_data['email']
+            # password = form.cleaned_data['password']
+            form.commit()
+            return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
     else:
         form = LoginForm()
 
@@ -29,14 +29,15 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
 
     def clean(self):
-        user = authenticate(email = self.email, password = self.password)
+        user = authenticate(email = self.cleaned_data.get('email'), password = self.cleaned_data.get('password'))
         if user is None:
-            raise forms.ValidationError('This email is not registered with our website. Please go to Signup')
+            raise forms.ValidationError('Invalid email or password')
         else:
             return self.cleaned_data
 
     def commit(self):
         """Process the form action"""
-        user = authenticate(email = self.email, password = self.password)
-        login(self.request, user)
+        user = authenticate(self, email = self.email, password = self.password)
+        user.save()
+        login(self, user)
         # login()

@@ -2,8 +2,8 @@
 
 <%block name = "content">
 
-    <form action="account/testform/" method='POST'/>
-        $ { csrf_input }
+    <form action="testform/" method='POST'/>
+        ${ csrf_input }
         ${ form.as_p() }
         <input type="submit" value="submit" />
     </form>

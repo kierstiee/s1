@@ -9,7 +9,8 @@ def process_request(request):
     # process form
     if request.method == 'POST':
         form = TestForm(request.POST)
-
+        if form.is_valid():
+            return HttpResponseRedirect('/')
     else:
         form = TestForm()
 
