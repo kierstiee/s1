@@ -39,5 +39,6 @@ class LoginForm(forms.Form):
         e1 = self.cleaned_data.get('email')
         p1 = self.cleaned_data.get('password')
 
-        login(request, user)
-        # login()
+        user = authenticate(email=e1, password = p1)
+        if user is not None:
+            login(request, user)
