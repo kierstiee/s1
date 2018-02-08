@@ -15,25 +15,25 @@ def process_request(request):
     if form.is_valid():
         form.commit()
         return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
-
     context = {
         'myform': form,
     }
     return request.dmp_render('login.html', context)
 
 
-class LoginForm(Formless):
+class LoginForm(Formless): # extending formlib.Form, not Django's forms.Form
+    '''An example form'''
     def init(self):
+        """Adds the fields for this form (called at end of __init__)"""
         self.fields['email'] = forms.EmailField(label='Email')
-        self.fields['password'] = forms.CharField(widget=forms.PasswordInput(), label='Password')
+        self.fields['password'] = forms.CharField(widget=forms.PasswordInput, label='Password')
         self.user = None
 
     def clean(self):
-        self.user = authenticate(email=self.cleaned_data.get('email'), password = self.cleaned_data.get('password'))
+        self.user = authenticate(email=self.cleaned_data.get('email'),password=self.cleaned_data.get('password'))
         if self.user is None:
             raise forms.ValidationError('Invalid email or password')
-        else:
-            return self.cleaned_data
+        return self.cleaned_data
 
     def commit(self):
         """Process the form action"""

@@ -11,12 +11,10 @@ import re
 @view_function
 def process_request(request):
     # process form
-
     form = SignupForm(request)
     if form.is_valid():
-        form.commit(request)
+        form.commit()
         return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
-
     context = {
         'myform': form,
     }
@@ -47,7 +45,6 @@ class SignupForm(Formless):   # extending formlib.Form, not Django's forms.Form
         # double password
         p1 = self.cleaned_data.get('password')
         p2 = self.cleaned_data.get('password2')
-        print(p2)
         if p1 != p2:
             raise forms.ValidationError('Passwords must match')
         return self.cleaned_data
@@ -58,10 +55,10 @@ class SignupForm(Formless):   # extending formlib.Form, not Django's forms.Form
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
         return email
 
-    def commit(self, request):
+    def commit(self):
         u1 = amod.User.objects.create(email=self.cleaned_data.get('email'),
-                                      password=self.cleaned_data.get('password'),
                                       first_name=self.cleaned_data.get('first_name'),
                                       last_name=self.cleaned_data.get('last_name'))
+        u1.set_password(self.cleaned_data.get('password'))
         u1.save()
-        login(request, u1)
+        login(self.request, u1)
