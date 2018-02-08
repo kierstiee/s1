@@ -4,6 +4,7 @@ from django.conf import settings
 from django_mako_plus import view_function
 from account import models as amod
 from django.contrib.auth import login, authenticate
+from formlib import Formless
 import re
 
 
@@ -11,15 +12,10 @@ import re
 def process_request(request):
     # process form
 
-    if request.method == 'POST':
-        form = SignupForm(request.POST)
-        if form.is_valid():
-            # once we're here, everything is clean. No more data changes
-            # do work of form (e.g., make payment, create user)
-            form.commit(request)
-            return HttpResponseRedirect('/account/index/')
-    else:
-        form = SignupForm()
+    form = SignupForm(request)
+    if form.is_valid():
+        form.commit(request)
+        return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
 
     context = {
         'myform': form,
@@ -27,12 +23,16 @@ def process_request(request):
     return request.dmp_render('signup.html', context)
 
 
-class SignupForm(forms.Form):
-    email = forms.EmailField(label='Email')
-    first_name = forms.CharField(label='First Name')
-    last_name = forms.CharField(label='Last Name')
-    password = forms.CharField(widget=forms.PasswordInput, label='Password')
-    password2 = forms.CharField(widget=forms.PasswordInput, label='Repeat password')
+class SignupForm(Formless):   # extending formlib.Form, not Django's forms.Form
+    '''An example form'''
+    def init(self):
+        """Adds the fields for this form (called at end of __init__)"""
+        self.fields['email'] = forms.EmailField(label='Email')
+        self.fields['first_name'] = forms.CharField(label='First Name')
+        self.fields['last_name'] = forms.CharField(label='Last Name')
+        self.fields['password'] = forms.CharField(widget=forms.PasswordInput, label='Password')
+        self.fields['password2'] = forms.CharField(widget=forms.PasswordInput, label='Repeat password')
+        self.user = None
 
     def clean_password(self):
         p1 = self.cleaned_data.get('password')
@@ -41,29 +41,27 @@ class SignupForm(forms.Form):
             raise forms.ValidationError('Password must have at least 8 characters. Please try again.')
         elif not has_digit:
             raise forms.ValidationError('Password must have a number. Please try again.')
-        return self.cleaned_data
+        return p1
 
     def clean(self):
         # double password
         p1 = self.cleaned_data.get('password')
         p2 = self.cleaned_data.get('password2')
         print(p2)
-        # if p1 != p2:
-        #     raise forms.ValidationError('Passwords must match')
+        if p1 != p2:
+            raise forms.ValidationError('Passwords must match')
         return self.cleaned_data
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if amod.User.objects.filter(email=email).exists():
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
-        return self.cleaned_data
+        return email
 
     def commit(self, request):
-        newuser = amod.User()
-        newuser.email = self.cleaned_data.get('email')
-        newuser.set_password(self.cleaned_data.get('password'))
-        newuser.first_name = self.cleaned_data.get('first_name')
-        newuser.last_name = self.cleaned_data.get('last_name')
-
-        newuser.save()
-        login(request, newuser)
+        u1 = amod.User.objects.create(email=self.cleaned_data.get('email'),
+                                      password=self.cleaned_data.get('password'),
+                                      first_name=self.cleaned_data.get('first_name'),
+                                      last_name=self.cleaned_data.get('last_name'))
+        u1.save()
+        login(request, u1)

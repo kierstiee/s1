@@ -2,20 +2,19 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django_mako_plus import view_function
-from django.contrib.auth import authenticate, login
 from account import models as amod
+from django.contrib.auth import login, authenticate
+from formlib import Formless
+import re
 
 
 @view_function
 def process_request(request):
     # process form
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            form.commit(request)
-            return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
-    else:
-        form = LoginForm()
+    form = LoginForm(request)
+    if form.is_valid():
+        form.commit()
+        return HttpResponseRedirect('/account/index/') # once we're here, everything is clean. No more data changes
 
     context = {
         'myform': form,
@@ -23,19 +22,19 @@ def process_request(request):
     return request.dmp_render('login.html', context)
 
 
-class LoginForm(forms.Form):
-    email = forms.EmailField(label='Email')
-    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
+class LoginForm(Formless):
+    def init(self):
+        self.fields['email'] = forms.EmailField(label='Email')
+        self.fields['password'] = forms.CharField(widget=forms.PasswordInput(), label='Password')
+        self.user = None
 
     def clean(self):
         self.user = authenticate(email=self.cleaned_data.get('email'), password = self.cleaned_data.get('password'))
-        # if user is None:
-        #     raise forms.ValidationError('Invalid email or password')
-        # else:
-        return self.cleaned_data
+        if self.user is None:
+            raise forms.ValidationError('Invalid email or password')
+        else:
+            return self.cleaned_data
 
-    def commit(self, request):
+    def commit(self):
         """Process the form action"""
-        newuser = authenticate(email=self.cleaned_data.get('email'), password=self.cleaned_data.get('password'))
-
-        login(request, newuser)
+        login(self.request, self.user)
