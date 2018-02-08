@@ -25,10 +25,8 @@ def process_request(request):
     return request.dmp_render('login.html', context)
 
 class LoginForm(forms.Form):
-    def __init__(self):
-        email = forms.EmailField(label='Email')
-        password = forms.CharField(widget=forms.PasswordInput(), label='Password')
-        self.user = None
+    email = forms.EmailField(label='Email')
+    password = forms.CharField(widget=forms.PasswordInput(), label='Password')
 
     def clean(self):
         user = authenticate(email = self.email, password = self.password)
