@@ -32,7 +32,6 @@ class SignupForms(forms.Form):
     last_name = forms.CharField(label='Last Name')
     password = forms.CharField(widget=forms.PasswordInput, label='Password')
     password2 = forms.CharField(widget=forms.PasswordInput, label='Repeat password')
-    u1 = amod.User.objects.create(email=email, first_name = first_name, last_name=last_name,password=password)
 
     def clean_password(self):
         p1 = self.cleaned_data.get('password')
@@ -47,26 +46,27 @@ class SignupForms(forms.Form):
         # double password
         password1 = self.cleaned_data.get('password')
         password2 = self.cleaned_data.get('password2')
-        if password1 == password2:
+        if password1 and password2 and password1 != password2:
             return self.cleaned_data
         else:
             raise forms.ValidationError('Passwords do not match. Please try again.')
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get('email')
-    #     if amod.User.objects.filter(email).exists():
-    #         raise forms.ValidationError('This email is already registered. Do you have an account already?')
-    #     return self.cleaned_data
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if amod.User.objects.filter(email=email).exists():
+            raise forms.ValidationError('This email is already registered. Do you have an account already?')
+        return self.cleaned_data
 
     def commit(self):
         """Process the form action"""
-        self.u1.email = self.email
-        self.u1.password = self.password
-        self.u1.first_name = self.first_name
-        self.u1.last_name = self.last_name
-        self.u1.save()
+        u1 = amod.User.objects.create()
+        u1.email = self.cleaned_data.get('email')
+        u1.password = self.cleaned_data.get('password')
+        u1.first_name = self.cleaned_data.get('first_name')
+        u1.last_name = self.cleaned_data.get('last_name')
+        u1.save()
 
-        login(self, self.u1)
+        login(self,u1)
         # create user object
         # save
         # login()
