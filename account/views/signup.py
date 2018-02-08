@@ -12,14 +12,14 @@ def process_request(request):
     # process form
 
     if request.method == 'POST':
-        form = SignupForms(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
             # once we're here, everything is clean. No more data changes
             # do work of form (e.g., make payment, create user)
             form.commit(request)
             return HttpResponseRedirect('/account/index/')
     else:
-        form = SignupForms()
+        form = SignupForm()
 
     context = {
         'myform': form,
@@ -27,7 +27,7 @@ def process_request(request):
     return request.dmp_render('signup.html', context)
 
 
-class SignupForms(forms.Form):
+class SignupForm(forms.Form):
     email = forms.EmailField(label='Email')
     first_name = forms.CharField(label='First Name')
     last_name = forms.CharField(label='Last Name')
@@ -47,8 +47,9 @@ class SignupForms(forms.Form):
         # double password
         p1 = self.cleaned_data.get('password')
         p2 = self.cleaned_data.get('password2')
-        # if str(p1) != str(p2):
-        #     raise forms.ValidationError('Passwords do not match. Please try again.')
+        print(p2)
+        # if p1 != p2:
+        #     raise forms.ValidationError('Passwords must match')
         return self.cleaned_data
 
     def clean_email(self):

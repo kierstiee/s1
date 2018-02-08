@@ -28,7 +28,7 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(), label='Password')
 
     def clean(self):
-        user = authenticate(email=self.cleaned_data.get('email'), password = self.cleaned_data.get('password'))
+        self.user = authenticate(email=self.cleaned_data.get('email'), password = self.cleaned_data.get('password'))
         # if user is None:
         #     raise forms.ValidationError('Invalid email or password')
         # else:
@@ -36,9 +36,6 @@ class LoginForm(forms.Form):
 
     def commit(self, request):
         """Process the form action"""
-        e1 = self.cleaned_data.get('email')
-        p1 = self.cleaned_data.get('password')
+        newuser = authenticate(email=self.cleaned_data.get('email'), password=self.cleaned_data.get('password'))
 
-        user = authenticate(email=e1, password = p1)
-        if user is not None:
-            login(request, user)
+        login(request, newuser)
