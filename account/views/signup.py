@@ -3,19 +3,20 @@ from django.http import HttpResponseRedirect
 from django.conf import settings
 from django_mako_plus import view_function
 from account import models as amod
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 import re
 
 
 @view_function
 def process_request(request):
     # process form
+
     if request.method == 'POST':
         form = SignupForms(request.POST)
         if form.is_valid():
             # once we're here, everything is clean. No more data changes
             # do work of form (e.g., make payment, create user)
-            form.commit()
+            form.commit(request)
             return HttpResponseRedirect('/account/index/')
     else:
         form = SignupForms()
@@ -44,12 +45,11 @@ class SignupForms(forms.Form):
 
     def clean(self):
         # double password
-        password1 = self.cleaned_data.get('password')
-        password2 = self.cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
-            return self.cleaned_data
-        else:
-            raise forms.ValidationError('Passwords do not match. Please try again.')
+        p1 = self.cleaned_data.get('password')
+        p2 = self.cleaned_data.get('password2')
+        # if str(p1) != str(p2):
+        #     raise forms.ValidationError('Passwords do not match. Please try again.')
+        return self.cleaned_data
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -57,16 +57,12 @@ class SignupForms(forms.Form):
             raise forms.ValidationError('This email is already registered. Do you have an account already?')
         return self.cleaned_data
 
-    def commit(self):
-        """Process the form action"""
-        u1 = amod.User.objects.create()
-        u1.email = self.cleaned_data.get('email')
-        u1.password = self.cleaned_data.get('password')
-        u1.first_name = self.cleaned_data.get('first_name')
-        u1.last_name = self.cleaned_data.get('last_name')
-        u1.save()
+    def commit(self, request):
+        newuser = amod.User()
+        newuser.email = self.cleaned_data.get('email')
+        newuser.set_password(self.cleaned_data.get('password'))
+        newuser.first_name = self.cleaned_data.get('first_name')
+        newuser.last_name = self.cleaned_data.get('last_name')
 
-        login(self,u1)
-        # create user object
-        # save
-        # login()
+        newuser.save()
+        login(request, newuser)
