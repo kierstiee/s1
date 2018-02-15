@@ -3,9 +3,9 @@ from polymorphic.models import PolymorphicModel
 
 
 class Category(models.Model):
-    create_date = models.DateTimeField.auto_now_add
-    edit_date = models.DateTimeField.auto_now
-    name = models.CharField()
+    create_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
+    name = models.TextField()
     description = models.TextField()
 
 
@@ -15,25 +15,20 @@ class Product(PolymorphicModel):
         ('IndividualProduct', 'Individual Product'),
         ('RentalProduct', 'Rental Product'),
     )
-    CHOICES = (
-        ('A', 'Active')
-        ('I', 'Inactive')
+    STATUS_CHOICES = (
+        ('A', 'Active'),
+        ('I', 'Inactive'),
     )
 
-    create_date = models.DateTimeField.auto_now_add
-    edit_date = models.DateTimeField.auto_now
+    create_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    numbers = models.IntegerField()
-    image = models.ImageField()
-    name = models.CharField()
+    # image = models.ImageField()
+    name = models.TextField()
     description = models.TextField()
 
-    status = models.CharField(
-        max_length=8,
-        choices=CHOICES,
-        default='A'
-    )
+    status = models.TextField(choices=STATUS_CHOICES,default='A')
 
 
 class BulkProduct(Product):
@@ -44,10 +39,10 @@ class BulkProduct(Product):
 
 
 class IndividualProduct(Product):
-    itemID = models.IntegerField()
+    itemID = models.TextField()
 
 
 class RentalProduct(Product):
-    itemID = models.IntegerField()
+    itemID = models.TextField()
     retire_date = models.DateTimeField()
     max_rental = models.IntegerField()

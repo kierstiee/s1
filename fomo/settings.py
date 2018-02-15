@@ -156,7 +156,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'fomodb',
         'USER': 'postgres',
-        'PASSWORD': '',
+        'PASSWORD': ' ',
         'HOST': 'localhost',
         'PORT': '5432',
     }
