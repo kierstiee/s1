@@ -153,8 +153,12 @@ WSGI_APPLICATION = 'fomo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fomo_products',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'fomodb',
+        'USER': 'postgres',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 

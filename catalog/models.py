@@ -1,32 +1,53 @@
 from django.db import models
-# from polymorphic import
+from polymorphic.models import PolymorphicModel
 
 
 class Category(models.Model):
     create_date = models.DateTimeField.auto_now_add
     edit_date = models.DateTimeField.auto_now
-    name = models.TextField(null=True, blank=True)
+    name = models.CharField()
+    description = models.TextField()
 
-class Product(models.Model):
+
+class Product(PolymorphicModel):
+    TYPE_CHOICES = (
+        ('BulkProduct', 'Bulk Product'),
+        ('IndividualProduct', 'Individual Product'),
+        ('RentalProduct', 'Rental Product'),
+    )
+    CHOICES = (
+        ('A', 'Active')
+        ('I', 'Inactive')
+    )
+
     create_date = models.DateTimeField.auto_now_add
     edit_date = models.DateTimeField.auto_now
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
-    price = models.DecimalField(null=True, blank=True)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    numbers = models.IntegerField()
+    image = models.ImageField()
+    name = models.CharField()
+    description = models.TextField()
 
-    ACTIVE = 'Active'
-    INACTIVE = 'Inactive'
-    CHOICES = (
-        (ACTIVE, 'Active')
-        (INACTIVE, 'Inactive')
-    )
     status = models.CharField(
         max_length=8,
         choices=CHOICES,
-        default=ACTIVE
+        default='A'
     )
+
 
 class BulkProduct(Product):
 
-class RentalProduct(Product):
+    quantity = models.IntegerField()
+    reorder_trigger = models.IntegerField()
+    reorder_quantity = models.IntegerField()
+
 
 class IndividualProduct(Product):
+    itemID = models.IntegerField()
+
+
+class RentalProduct(Product):
+    itemID = models.IntegerField()
+    retire_date = models.DateTimeField()
+    max_rental = models.IntegerField()
