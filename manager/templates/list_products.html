@@ -1,7 +1,9 @@
-<%inherit file="base.htm" />
+<%inherit file="app_base.htm" />
 
 <%block name="content">
     <div class="content">
-
+        %for product in product_list:
+            <li>${ product_list }</li>
+        %endfor
     </div>
 </%block>
