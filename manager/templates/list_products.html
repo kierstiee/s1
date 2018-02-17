@@ -2,10 +2,24 @@
 
 <%block name="content">
     <div class="content">
+        <a href="/manager/add_product">Add a new product</a>
         <table>
+            <tr>
+                <th>Category</th>
+                <th>&emsp;Type</th>
+                <th>&emsp;Name</th>
+                <th>&emsp;Price</th>
+                <th>&emsp;Quantity</th>
+            </tr>
             %for product in product_list:
                 <tr>
-                    <td><li>${ product.name }</li></td>
+                    <td>${ product.category.name }</td>
+                    <td>&emsp;${ product.TITLE }</td>
+                    <td>&emsp;${ product.name }</td>
+                    <td>&emsp;${ product.price }</td>
+                    <td>&emsp;${ product.quantity }</td>
+                    <a href="/manager/edit_product">Edit</a>
+                    <a href="/manager/delete_product">Delete</a>
                 </tr>
             %endfor
         </table>
