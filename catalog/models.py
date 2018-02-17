@@ -10,8 +10,9 @@ class Category(models.Model):
 
 
 class Product(PolymorphicModel):
+
     TYPE_CHOICES = (
-        ('BulkProduct', 'Bulk Product'),
+        (BULK, 'Bulk Product'),
         ('IndividualProduct', 'Individual Product'),
         ('RentalProduct', 'Rental Product'),
     )
