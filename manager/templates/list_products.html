@@ -10,6 +10,7 @@
                 <th>&emsp;Name</th>
                 <th>&emsp;Price</th>
                 <th>&emsp;Quantity</th>
+                <th>&emsp;Actions</th>
             </tr>
             %for product in product_list:
                 <tr>
@@ -18,8 +19,7 @@
                     <td>&emsp;${ product.name }</td>
                     <td>&emsp;${ product.price }</td>
                     <td>&emsp;${ product.quantity }</td>
-                    <a href="/manager/edit_product">Edit</a>
-                    <a href="/manager/delete_product">Delete</a>
+                    <td>&emsp;<a href="/manager/edit_product/${ product.id }">Edit</a>&emsp;<a href="/manager/delete_product/${ product.id }">Delete</a></td>
                 </tr>
             %endfor
         </table>
