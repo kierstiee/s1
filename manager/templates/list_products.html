@@ -2,8 +2,12 @@
 
 <%block name="content">
     <div class="content">
-        %for product in product_list:
-            <li>${ product_list }</li>
-        %endfor
+        <table>
+            %for product in product_list:
+                <tr>
+                    <td><li>${ product.name }</li></td>
+                </tr>
+            %endfor
+        </table>
     </div>
 </%block>
