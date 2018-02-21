@@ -21,5 +21,15 @@ class ProductForm(Formless):
     """Individual product"""
     def init(self):
         self.fields['name'] = forms.CharField(label='Name')
-        self.fields['price'] = forms.NumberInput(label='Price')
+        self.fields['price'] = forms.CharField(label='Price')
         self.fields['description'] = forms.CharField(label='Describe the product')
+        self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.name)
+        self.fields['status'] = forms.ChoiceField(label='Status')
+        self.fields['quantity'] = forms.CharField(label='Quantity')
+        self.fields['type'] = forms.ChoiceField(label='Type of product')
+        self.fields['reorder_trigger'] = forms.CharField(label='Reorder Trigger')
+        self.fields['reorder_quantity'] = forms.CharField(label='Reorder Quantity')
+        self.fields['itemID'] = forms.CharField(label='Item ID')
+        self.fields['itemID'] = forms.CharField(label='Item ID')
+        self.fields['retire_date'] = forms.CharField(label='Retire Date')
+        self.fields['max_rental_days'] = forms.CharField(label='Maximum Rental Days')
