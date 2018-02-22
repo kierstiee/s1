@@ -8,10 +8,10 @@ from django import forms
 
 
 @view_function
-def process_request(request):
-    form = Individual()
+def process_request(request, real_product:cmod.Product):
+    form = Individual(real_product)
     if request.method == 'POST':
-        form = Individual(request.POST)
+        form = Individual(request.POST, real_product)
         if form.is_valid():
             form.commit()
             return HttpResponseRedirect('/manager/list_products/')
@@ -27,12 +27,15 @@ class ProductForm(forms.ModelForm):
         model = cmod.Product
         exclude = ['type']
 
-    category = forms.ModelChoiceField(queryset=cmod.Category.objects.all(), empty_label='Please select one')
+    name = forms.CharField(initial=real_product.name)
+    description = forms.CharField(initial=product.description)
+    price = forms.CharField(initial=product.price)
+    quantity = forms.CharField(initial=product.quantity)
+    category = forms.ModelChoiceField(queryset=cmod.Category.objects.all(), empty_label='Please select one', initial=product.category)
 
 
 class Individual(ProductForm):
-    itemID = forms.CharField(required=False)
-
+    itemID = forms.CharField(required=False, initial=product.IndividualProduct.itemID)
     class Meta:
         model = cmod.IndividualProduct
         fields = '__all__'
@@ -46,9 +49,9 @@ class Individual(ProductForm):
 
 
 class Rental(ProductForm):
-    itemID = forms.CharField(required=False)
-    retire_date = forms.CharField(required=False)
-    max_rental_days = forms.CharField(required=False)
+    itemID = forms.CharField(required=False, initial=product.RentalProduct.itemID)
+    retire_date = forms.CharField(required=False, initial=product.RentalProduct.retire_date)
+    max_rental_days = forms.CharField(required=False, initial=product.RentalProduct.max_rental_days)
 
     class Meta:
         model = cmod.RentalProduct
@@ -70,8 +73,8 @@ class Rental(ProductForm):
 
 
 class Bulk(ProductForm):
-    reorder_trigger = forms.CharField(required=False)
-    reorder_quantity = forms.CharField(required=False)
+    reorder_trigger = forms.CharField(required=False, initial=product.BulkProduct.reorder_trigger)
+    reorder_quantity = forms.CharField(required=False, initial=product.BulkProduct.reorder_quantity)
 
     class Meta:
         model = cmod.BulkProduct

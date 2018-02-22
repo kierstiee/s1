@@ -2,19 +2,26 @@ from django.conf import settings
 from datetime import datetime, timezone
 from catalog import models as cmod
 from django.http import HttpResponseRedirect
-from django_mako_plus import view_function
+from django_mako_plus import view_function, jscontext
 from formlib import Formless
 from django import forms
 
 
 @view_function
 def process_request(request):
-    form = Individual()
+
     if request.method == 'POST':
-        form = Individual(request.POST)
+        form = BulkForm(request.POST)
         if form.is_valid():
-            form.commit()
+            if form.type == 'BulkProduct':
+                form.Bulk.commit()
+            elif form.type == 'RentalProduct':
+                form.Rental.commit()
+            elif form.type == 'IndividualProduct':
+                form.Individual.commit()
             return HttpResponseRedirect('/manager/list_products/')
+    else:
+        form = BulkForm()
     context = {
         'myform':form,
     }
@@ -23,15 +30,17 @@ def process_request(request):
 
 class ProductForm(forms.ModelForm):
 
-    type = forms.ChoiceField(label='Choose which type', widget=forms.Select(), choices=cmod.Product.TYPE_CHOICES)
     class Meta:
         model = cmod.Product
         fields = "__all__"
 
+    name = forms.CharField(label='Name')
+    description = forms.CharField(label='Description')
+    type = forms.ChoiceField(label='Choose which type', widget=forms.Select(), choices=cmod.Product.TYPE_CHOICES)
     category = forms.ModelChoiceField(queryset=cmod.Category.objects.all(), empty_label='Please select one')
 
 
-class Individual(ProductForm):
+class IndividualForm(ProductForm):
     itemID = forms.CharField(required=False)
 
     class Meta:
@@ -46,7 +55,7 @@ class Individual(ProductForm):
             return self.cleaned_data
 
 
-class Rental(ProductForm):
+class RentalForm(ProductForm):
     itemID = forms.CharField(required=False)
     retire_date = forms.CharField(required=False)
     max_rental_days = forms.CharField(required=False)
@@ -70,7 +79,7 @@ class Rental(ProductForm):
         else: raise forms.ValidationError('Please enter the retire date')
 
 
-class Bulk(ProductForm):
+class BulkForm(ProductForm):
     reorder_trigger = forms.CharField(required=False)
     reorder_quantity = forms.CharField(required=False)
 
