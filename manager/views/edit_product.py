@@ -10,7 +10,9 @@ from django import forms
 
 @view_function
 def process_request(request, real_product:cmod.Product):
-    form = ProductForm(request)
+    something = forms.model_to_dict(real_product)
+
+    form = ProductForm(request,initial=something)
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -27,8 +29,8 @@ class ProductForm(Formless):
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
         self.fields['price'] = forms.CharField(label='Price')
-        self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.name)
-        self.fields['status'] = forms.ChoiceField(label='Status')
+        self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
+        self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
         self.fields['quantity'] = forms.CharField(label='Quantity')
 
     class Bulk():
