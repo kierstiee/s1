@@ -32,6 +32,7 @@ class ProductForm(Formless):
         self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
         self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
         self.fields['quantity'] = forms.CharField(label='Quantity')
+        self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
 
         self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
         self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
