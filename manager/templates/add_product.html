@@ -1,9 +1,11 @@
-<%inherit file="app_base.htm" />
+<%inherit file="manager/templates/app_base.htm/" />
 
-<%block name="content">
-    <form method='POST'/>
+<%block name = "content" >
+
+    <form method='GET'/>
         ${ csrf_input }
         ${ myform.as_p() }
         <input type="submit" value="Create" />
     </form>
+
 </%block>
