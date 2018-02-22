@@ -24,7 +24,7 @@ def process_request(request, real_product:cmod.Product):
     return request.dmp_render('edit_product.html', context)
 
 class ProductForm(Formless):
-    """Individual product"""
+
     def init(self):
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
@@ -33,47 +33,60 @@ class ProductForm(Formless):
         self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
         self.fields['quantity'] = forms.CharField(label='Quantity')
 
-    class Bulk():
-        def init(self):
-            self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
-            self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
-        def clean(self):
-            rt = self.cleaned_data.get('reorder_trigger')
-            rq = self.cleaned_data.get('reorder_quantity')
-            if rt:
-                if rq:
-                    return self.cleaned_data
-                else: raise forms.ValidationError('Please enter a reorder quantity')
-            else: raise forms.ValidationError('Please enter a reorder trigger amount')
+        self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
+        self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
 
-    class Rental():
-        def init(self):
-            self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
-            self.fields['retire_date'] = forms.CharField(required=False, label='Retire Date')
-            self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
-        def clean(self):
-            iid = self.cleaned_data.get('itemID')
-            rd = self.cleaned_data.get('retire_date')
-            mrd = self.cleaned_data.get('max_rental_days')
-            if rd:
-                if mrd:
-                    if iid:
-                        return self.cleaned_data
+        self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
+
+        self.fields['retire_date'] = forms.CharField(required=False, label='Retire Date')
+        self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
+
+    def clean(self):
+        n1 = self.cleaned_data.get('name')
+        d1 = self.cleaned_data.get('description')
+        p1 = self.cleaned_data.get('price')
+        q1 = self.cleaned_data.get('quantity')
+
+        if n1:
+            if d1:
+                if p1:
+                    if q1:
+                        if type == 'BulkProduct':
+                            rt = self.cleaned_data.get('reorder_trigger')
+                            rq = self.cleaned_data.get('reorder_quantity')
+                            if rt:
+                                if rq:
+                                    return self.cleaned_data
+                                else: raise forms.ValidationError('Please enter a reorder quantity')
+                            else: raise forms.ValidationError('Please enter a reorder trigger amount')
+                        elif type == 'RentalProduct':
+                            iid = self.cleaned_data.get('itemID')
+                            rd = self.cleaned_data.get('retire_date')
+                            mrd = self.cleaned_data.get('max_rental_days')
+                            if rd:
+                                if mrd:
+                                    if iid:
+                                        return self.cleaned_data
+                                    else:
+                                        raise forms.ValidationError('Please enter an item ID')
+                                else:
+                                    raise forms.ValidationError('Please enter the maximum number of rental days')
+                            else: raise forms.ValidationError('Please enter the retire date')
+                        elif type=='IndividualProduct':
+                            iid = self.cleaned_data.get('itemID')
+                            if not iid:
+                                raise forms.ValidationError('Please enter an item ID')
+                            else:
+                                return self.cleaned_data
                     else:
-                        raise forms.ValidationError('Please enter an item ID')
+                        raise forms.ValidationError('Please enter the quantity')
                 else:
-                    raise forms.ValidationError('Please enter the maximum number of rental days')
-            else: raise forms.ValidationError('Please enter the retire date')
-
-    class Individual():
-        def init(self):
-            self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
-        def clean(self):
-            iid = self.cleaned_data.get('itemID')
-            if not iid:
-                raise forms.ValidationError('Please enter an item ID')
+                    raise forms.ValidationError('Please enter the price')
             else:
-                return self.cleaned_data
+                raise forms.ValidationError('Please enter the description')
+        else:
+            raise forms.ValidationError('Please enter the name')
+
 
     def commit(self,product):
         p1 = self.cleaned_data.get('type')

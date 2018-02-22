@@ -16,23 +16,30 @@ def process_request(request):
             form.commit()
             return HttpResponseRedirect('/manager/list_products/')
     else:
-        form = ProductForm()
+        form = ProductForm(request)
     context = {
         'myform':form,
     }
     return request.dmp_render('add_product.html', context)
 
 
-class ProductForm(forms.ModelForm):
+class ProductForm(Formless):
 
-    class Meta:
-        model = cmod.Product
-        fields = "__all__"
+    def init(self):
+        self.fields['name'] = forms.CharField(label='Name')
+        self.fields['description'] = forms.CharField(label='Describe the product')
+        self.fields['price'] = forms.CharField(label='Price')
+        self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
+        self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
+        self.fields['quantity'] = forms.CharField(label='Quantity')
 
-    name = forms.CharField(label='Name')
-    description = forms.CharField(label='Description')
-    type = forms.ChoiceField(label='Choose which type', widget=forms.Select(), choices=cmod.Product.TYPE_CHOICES)
-    category = forms.ModelChoiceField(queryset=cmod.Category.objects.all(), empty_label='Please select one')
+        self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
+        self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
+
+        self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
+
+        self.fields['retire_date'] = forms.CharField(required=False, label='Retire Date')
+        self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
 
     def clean(self):
         n1 = self.cleaned_data.get('name')
@@ -44,7 +51,33 @@ class ProductForm(forms.ModelForm):
             if d1:
                 if p1:
                     if q1:
-                        return self.cleaned_data
+                        if type == 'BulkProduct':
+                            rt = self.cleaned_data.get('reorder_trigger')
+                            rq = self.cleaned_data.get('reorder_quantity')
+                            if rt:
+                                if rq:
+                                    return self.cleaned_data
+                                else: raise forms.ValidationError('Please enter a reorder quantity')
+                            else: raise forms.ValidationError('Please enter a reorder trigger amount')
+                        elif type == 'RentalProduct':
+                            iid = self.cleaned_data.get('itemID')
+                            rd = self.cleaned_data.get('retire_date')
+                            mrd = self.cleaned_data.get('max_rental_days')
+                            if rd:
+                                if mrd:
+                                    if iid:
+                                        return self.cleaned_data
+                                    else:
+                                        raise forms.ValidationError('Please enter an item ID')
+                                else:
+                                    raise forms.ValidationError('Please enter the maximum number of rental days')
+                            else: raise forms.ValidationError('Please enter the retire date')
+                        elif type=='IndividualProduct':
+                            iid = self.cleaned_data.get('itemID')
+                            if not iid:
+                                raise forms.ValidationError('Please enter an item ID')
+                            else:
+                                return self.cleaned_data
                     else:
                         raise forms.ValidationError('Please enter the quantity')
                 else:
@@ -53,62 +86,6 @@ class ProductForm(forms.ModelForm):
                 raise forms.ValidationError('Please enter the description')
         else:
             raise forms.ValidationError('Please enter the name')
-
-    class IndividualForm():
-        itemID = forms.CharField(required=False)
-
-        class Meta:
-            model = cmod.IndividualProduct
-            fields = '__all__'
-
-        def clean(self):
-            iid = self.cleaned_data.get('itemID')
-            if not iid:
-                raise forms.ValidationError('Please enter an item ID')
-            else:
-                return self.cleaned_data
-
-
-    class RentalForm():
-        itemID = forms.CharField(required=False)
-        retire_date = forms.CharField(required=False)
-        max_rental_days = forms.CharField(required=False)
-
-        class Meta:
-            model = cmod.RentalProduct
-            fields = '__all__'
-
-        def clean(self):
-            iid = self.cleaned_data.get('itemID')
-            rd = self.cleaned_data.get('retire_date')
-            mrd = self.cleaned_data.get('max_rental_days')
-            if rd:
-                if mrd:
-                    if iid:
-                        return self.cleaned_data
-                    else:
-                        raise forms.ValidationError('Please enter an item ID')
-                else:
-                    raise forms.ValidationError('Please enter the maximum number of rental days')
-            else: raise forms.ValidationError('Please enter the retire date')
-
-
-    class BulkForm():
-        reorder_trigger = forms.CharField(required=False)
-        reorder_quantity = forms.CharField(required=False)
-
-        class Meta:
-            model = cmod.BulkProduct
-            fields = '__all__'
-
-        def clean(self):
-            rt = self.cleaned_data.get('reorder_trigger')
-            rq = self.cleaned_data.get('reorder_quantity')
-            if rt:
-                if rq:
-                    return self.cleaned_data
-                else: raise forms.ValidationError('Please enter a reorder quantity')
-            else: raise forms.ValidationError('Please enter a reorder trigger amount')
 
     def commit(self):
         p1 = self.cleaned_data.get('type')
