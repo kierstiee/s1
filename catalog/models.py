@@ -49,5 +49,5 @@ class IndividualProduct(Product):
 class RentalProduct(Product):
     TITLE = 'RentalProduct'
     itemID = models.TextField()
-    retire_date = models.DateTimeField(null=True, blank=True)
+    retire_date = models.DateField(null=True, blank=True)
     max_rental_days = models.IntegerField(default=0)

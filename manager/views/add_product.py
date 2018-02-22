@@ -114,7 +114,7 @@ class ProductForm(Formless):
                                                    price=self.cleaned_data.get('price'),
                                                    quantity=self.cleaned_data.get('quantity'),
                                                    status=self.cleaned_data.get('status'),
-                                                   itemid=self.cleaned_data.get('itemID'),
+                                                   itemID=self.cleaned_data.get('itemID'),
                                                    retire_date=self.cleaned_data.get('retire_date'),
                                                    max_rental_days=self.cleaned_data.get('max_rental_days'))
             p2.RentalForm.save()
