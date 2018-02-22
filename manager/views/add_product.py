@@ -9,14 +9,11 @@ from django import forms
 
 @view_function
 def process_request(request):
+    form = ProductForm(request)
+    if form.is_valid():
+        form.commit()
+        return HttpResponseRedirect('/manager/list_products/')
 
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            form.commit()
-            return HttpResponseRedirect('/manager/list_products/')
-    else:
-        form = ProductForm(request)
     context = {
         'myform':form,
     }
@@ -26,6 +23,7 @@ def process_request(request):
 class ProductForm(Formless):
 
     def init(self):
+        self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
         self.fields['price'] = forms.CharField(label='Price')
@@ -107,7 +105,7 @@ class ProductForm(Formless):
                                                        price=self.cleaned_data.get('price'),
                                                        quantity=self.cleaned_data.get('quantity'),
                                                        status=self.cleaned_data.get('status'),
-                                                       itemid=self.cleaned_data.get('itemID'))
+                                                       itemID=self.cleaned_data.get('itemID'))
             p2.save()
         elif p1 == 'RentalProduct':
             p2 = cmod.RentalProduct.objects.create(name=self.cleaned_data.get('name'),
