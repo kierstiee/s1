@@ -1,0 +1,55 @@
+#content_top {
+    padding: 3px;
+}
+
+#content_middle {
+    position: relative;
+    height: 100%;
+}
+
+#content_left {
+    position: absolute;
+    width: 200px;
+    left: 0;
+    top: 0;
+    height: 100%;
+    padding: 10px;
+}
+
+#content {
+    margin-left: 200px;
+    margin-right: 200px;
+    padding: 10px;
+    height: 100%;
+    position: relative;
+}
+
+#content_right {
+    position: absolute;
+    width: 200px;
+    right: 0;
+    top: 0;
+    height: 100%;
+    padding: 10px;
+}
+
+#content_bottom {
+    position: relative;
+    width:100%;
+    height:100px;
+}
+
+@media (max-width: 992px) {
+    #content_top, #content, #content_bottom {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #content_left, #content_right {
+        position: relative;
+        width: auto;
+    }
+}
+
+#piano {
+    padding: 5px;
+}

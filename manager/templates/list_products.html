@@ -1,0 +1,28 @@
+<%inherit file="app_base.htm" />
+
+<%block name="content">
+    <div class="content">
+        <a href="/manager/add_product">Add a new product</a>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>&emsp;Type</th>
+                <th>&emsp;Name</th>
+                <th>&emsp;Price</th>
+                <th>&emsp;Quantity</th>
+                <th>&emsp;Actions</th>
+            </tr>
+            %for product in product_list:
+                <tr>
+                    <td>${ product.category.name }</td>
+                    <td>&emsp;${ product.TITLE }</td>
+                    <td>&emsp;${ product.name }</td>
+                    <td>&emsp;${ product.price }</td>
+                    <td>&emsp;${ product.quantity }</td>
+                    <td>&emsp;<a href="/manager/edit_product/${ product.id }">Edit</a>
+                        &emsp;<a href="/manager/delete_product/${ product.id }">Delete</a></td>
+                </tr>
+            %endfor
+        </table>
+    </div>
+</%block>
