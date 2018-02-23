@@ -29,7 +29,7 @@ class ProductForm(Formless):
         self.fields['price'] = forms.CharField(label='Price')
         self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
         self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
-        self.fields['quantity'] = forms.CharField(label='Quantity')
+        self.fields['quantity'] = forms.CharField(label='Quantity', initial=1)
         self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
 
         self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
@@ -37,7 +37,7 @@ class ProductForm(Formless):
 
         self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
 
-        self.fields['retire_date'] = forms.CharField(required=False, label='Retire Date')
+        self.fields['retire_date'] = forms.DateField(required=False, label='Retire Date')
         self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
 
     def clean(self):
@@ -117,6 +117,6 @@ class ProductForm(Formless):
                                                    itemID=self.cleaned_data.get('itemID'),
                                                    retire_date=self.cleaned_data.get('retire_date'),
                                                    max_rental_days=self.cleaned_data.get('max_rental_days'))
-            p2.RentalForm.save()
+            p2.save()
         else:
             raise forms.ValidationError('Form is incorrect')

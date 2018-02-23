@@ -11,17 +11,15 @@ from django import forms
 @view_function
 def process_request(request, real_product:cmod.Product):
     something = forms.model_to_dict(real_product)
-
-    form = ProductForm(request,initial=something)
-    if request.method == 'POST':
-        form = ProductForm(request.POST)
-        if form.is_valid():
-            form.commit(real_product)
-            return HttpResponseRedirect('/manager/list_products/')
+    form = ProductForm(request, initial=something)
+    if form.is_valid():
+        form.commit(real_product)
+        return HttpResponseRedirect('/manager/list_products/')
     context = {
         'myform':form,
     }
     return request.dmp_render('edit_product.html', context)
+
 
 class ProductForm(Formless):
 
@@ -32,14 +30,16 @@ class ProductForm(Formless):
         self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
         self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
         self.fields['quantity'] = forms.CharField(label='Quantity')
+        self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
+        # , widget=forms.HiddenInput())
 
         self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
         self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
 
         self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
 
-        self.fields['retire_date'] = forms.CharField(required=False, label='Retire Date')
-        self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
+        self.fields['retire_date'] = forms.DateField(required=False, label='Retire Date')
+        self.fields['max_rental_days'] = forms.DateField(required=False, label='Maximum Rental Days')
 
     def clean(self):
         n1 = self.cleaned_data.get('name')
@@ -95,42 +95,46 @@ class ProductForm(Formless):
         product.category=self.cleaned_data.get('category')
         product.price=self.cleaned_data.get('price')
         product.quantity=self.cleaned_data.get('quantity')
-        product.status=self.cleaned_data.get('status'),
+        product.status=self.cleaned_data.get('status')
+        product.type=self.cleaned_data.get('type')
         if p1 == 'BulkProduct':
-            product.BulkProduct.reorder_trigger=self.cleaned_data.get('reorder_trigger')
-            product.BulkProduct.reorder_quantity=self.cleaned_data.get('reorder_quantity')
-            p2 = cmod.BulkProduct.objects.create(name=self.cleaned_data.get('name'),
-                                                 description=self.cleaned_data.get('description'),
-                                                 category=self.cleaned_data.get('category'),
-                                                 price=self.cleaned_data.get('price'),
-                                                 quantity=self.cleaned_data.get('quantity'),
-                                                 status=self.cleaned_data.get('status'),
-                                                 reorder_trigger=self.cleaned_data.get('reorder_trigger'),
-                                                 reorder_quantity=self.cleaned_data.get('reorder_quantity'))
-            p2.save()
+            product.reorder_trigger=self.cleaned_data.get('reorder_trigger')
+            product.reorder_quantity=self.cleaned_data.get('reorder_quantity')
+
+            product.name=self.cleaned_data.get('name')
+            product.description=self.cleaned_data.get('description')
+            product.category=self.cleaned_data.get('category')
+            product.price=self.cleaned_data.get('price')
+            product.quantity=self.cleaned_data.get('quantity')
+            product.status=self.cleaned_data.get('status')
+            product.reorder_trigger=self.cleaned_data.get('reorder_trigger')
+            product.reorder_quantity=self.cleaned_data.get('reorder_quantity')
+            product.save()
         elif p1 == 'IndividualProduct':
-            product.IndividualProduct.itemID=self.cleaned_data.get('itemID')
-            p2 = cmod.IndividualProduct.objects.create(name=self.cleaned_data.get('name'),
-                                                       description=self.cleaned_data.get('description'),
-                                                       category=self.cleaned_data.get('category'),
-                                                       price=self.cleaned_data.get('price'),
-                                                       quantity=self.cleaned_data.get('quantity'),
-                                                       status=self.cleaned_data.get('status'),
-                                                       itemid=self.cleaned_data.get('itemID'))
-            p2.save()
+            product.itemID=self.cleaned_data.get('itemID')
+
+            product.name=self.cleaned_data.get('name')
+            product.description=self.cleaned_data.get('description')
+            product.category=self.cleaned_data.get('category')
+            product.price=self.cleaned_data.get('price')
+            product.quantity=self.cleaned_data.get('quantity')
+            product.status=self.cleaned_data.get('status')
+            product.itemID=self.cleaned_data.get('itemID')
+            product.save()
         elif p1 == 'RentalProduct':
-            product.RentalProduct.itemID=self.cleaned_data.get('itemID')
-            product.RentalProduct.retire_date=self.cleaned_data.get('retire_date')
-            product.RentalProduct.max_rental_days=self.cleaned_data.get('max_rental_days')
-            p2 = cmod.RentalProduct.objects.create(name=self.cleaned_data.get('name'),
-                                                   description=self.cleaned_data.get('description'),
-                                                   category=self.cleaned_data.get('category'),
-                                                   price=self.cleaned_data.get('price'),
-                                                   quantity=self.cleaned_data.get('quantity'),
-                                                   status=self.cleaned_data.get('status'),
-                                                   itemid=self.cleaned_data.get('itemID'),
-                                                   retire_date=self.cleaned_data.get('retire_date'),
-                                                   max_rental_days=self.cleaned_data.get('max_rental_days'))
-            p2.RentalForm.save()
+            product.itemID=self.cleaned_data.get('itemID')
+            product.retire_date=self.cleaned_data.get('retire_date')
+            product.max_rental_days=self.cleaned_data.get('max_rental_days')
+
+            product.name=self.cleaned_data.get('name')
+            product.description=self.cleaned_data.get('description')
+            product.category=self.cleaned_data.get('category')
+            product.price=self.cleaned_data.get('price')
+            product.quantity=self.cleaned_data.get('quantity')
+            product.status=self.cleaned_data.get('status')
+            product.itemID=self.cleaned_data.get('itemID')
+            product.retire_date=self.cleaned_data.get('retire_date')
+            product.max_rental_days=self.cleaned_data.get('max_rental_days')
+            product.save()
         else:
             raise forms.ValidationError('Form is incorrect')
