@@ -30,7 +30,6 @@ class Product(PolymorphicModel):
     category = models.ForeignKey('Category', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=7, decimal_places=2)
     quantity = models.IntegerField(default=1)
-    # image = models.ImageField()
 
     status = models.TextField(choices=STATUS_CHOICES,default='A')
 

@@ -25,7 +25,7 @@ def process_request(request, real_product:cmod.Product):
 class ProductForm(Formless):
 
     def init(self):
-        
+
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
         self.fields['price'] = forms.CharField(label='Price')
@@ -46,27 +46,26 @@ class ProductForm(Formless):
         d1 = self.cleaned_data.get('description')
         p1 = self.cleaned_data.get('price')
         q1 = self.cleaned_data.get('quantity')
-        t1 = self.cleaned_data.get('type')
-
+        t1 = product.TITLE
+        rt = self.cleaned_data.get('reorder_trigger')
+        rq = self.cleaned_data.get('reorder_quantity')
+        iid = self.cleaned_data.get('itemID')
+        rd = self.cleaned_data.get('retire_date')
+        mrd = self.cleaned_data.get('max_rental_days')
         if n1:
             if d1:
                 if p1:
                     if q1:
                         if t1 == 'BulkProduct':
-                            rt = self.cleaned_data.get('reorder_trigger')
-                            rq = self.cleaned_data.get('reorder_quantity')
-                            if rt:
-                                if rq:
+                            if rt != '':
+                                if rq != '':
                                     return self.cleaned_data
                                 else: raise forms.ValidationError('Please enter a reorder quantity')
                             else: raise forms.ValidationError('Please enter a reorder trigger amount')
                         elif t1 == 'RentalProduct':
-                            iid = self.cleaned_data.get('itemID')
-                            rd = self.cleaned_data.get('retire_date')
-                            mrd = self.cleaned_data.get('max_rental_days')
-                            if rd:
-                                if mrd:
-                                    if iid:
+                            if rd != '':
+                                if mrd != '':
+                                    if iid != '':
                                         return self.cleaned_data
                                     else:
                                         raise forms.ValidationError('Please enter an item ID')
@@ -74,8 +73,7 @@ class ProductForm(Formless):
                                     raise forms.ValidationError('Please enter the maximum number of rental days')
                             else: raise forms.ValidationError('Please enter the retire date')
                         elif t1 == 'IndividualProduct':
-                            iid = self.cleaned_data.get('itemID')
-                            if not iid:
+                            if iid == '':
                                 raise forms.ValidationError('Please enter an item ID')
                             else:
                                 return self.cleaned_data
