@@ -14,8 +14,10 @@ def process_request(request, real_product:cmod.Product):
     if form.is_valid():
         form.commit(real_product)
         return HttpResponseRedirect('/manager/list_products/')
+    type = real_product.TITLE
     context = {
         'myform':form,
+        'type':type,
     }
     return request.dmp_render('edit_product.html', context)
 
@@ -23,7 +25,7 @@ def process_request(request, real_product:cmod.Product):
 class ProductForm(Formless):
 
     def init(self):
-
+        self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
         self.fields['price'] = forms.CharField(label='Price')
@@ -37,7 +39,7 @@ class ProductForm(Formless):
         self.fields['itemID'] = forms.CharField(required=False, label='Item ID')
 
         self.fields['retire_date'] = forms.DateField(required=False, label='Retire Date')
-        self.fields['max_rental_days'] = forms.DateField(required=False, label='Maximum Rental Days')
+        self.fields['max_rental_days'] = forms.CharField(required=False, label='Maximum Rental Days')
 
     def clean(self):
         n1 = self.cleaned_data.get('name')
@@ -62,7 +64,6 @@ class ProductForm(Formless):
                             rd = self.cleaned_data.get('retire_date')
                             mrd = self.cleaned_data.get('max_rental_days')
                             if rd:
-                                print('>>>>>>>>>>>>>>>>>>',rd)
                                 if mrd:
                                     if iid:
                                         return self.cleaned_data
@@ -71,7 +72,7 @@ class ProductForm(Formless):
                                 else:
                                     raise forms.ValidationError('Please enter the maximum number of rental days')
                             else: raise forms.ValidationError('Please enter the retire date')
-                        elif type=='IndividualProduct':
+                        elif type == 'IndividualProduct':
                             iid = self.cleaned_data.get('itemID')
                             if not iid:
                                 raise forms.ValidationError('Please enter an item ID')
@@ -87,7 +88,7 @@ class ProductForm(Formless):
             raise forms.ValidationError('Please enter the name')
 
     def commit(self,product):
-        p1 = product.type
+        p1 = product.TITLE
         product.name=self.cleaned_data.get('name')
         product.description=self.cleaned_data.get('description')
         product.category=self.cleaned_data.get('category')
