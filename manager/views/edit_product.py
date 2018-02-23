@@ -46,7 +46,9 @@ class ProductForm(Formless):
         d1 = self.cleaned_data.get('description')
         p1 = self.cleaned_data.get('price')
         q1 = self.cleaned_data.get('quantity')
-        t1 = product.TITLE
+        queryset = cmod.Product.objects.filter(name=self.cleaned_data.get('name'))
+        checktype = queryset.reverse()[0]
+        t1 = checktype.TITLE
         rt = self.cleaned_data.get('reorder_trigger')
         rq = self.cleaned_data.get('reorder_quantity')
         iid = self.cleaned_data.get('itemID')
@@ -63,14 +65,12 @@ class ProductForm(Formless):
                                 else: raise forms.ValidationError('Please enter a reorder quantity')
                             else: raise forms.ValidationError('Please enter a reorder trigger amount')
                         elif t1 == 'RentalProduct':
-                            if rd != '':
+                            if rd != None:
                                 if mrd != '':
                                     if iid != '':
                                         return self.cleaned_data
-                                    else:
-                                        raise forms.ValidationError('Please enter an item ID')
-                                else:
-                                    raise forms.ValidationError('Please enter the maximum number of rental days')
+                                    else: raise forms.ValidationError('Please enter an item ID')
+                                else: raise forms.ValidationError('Please enter the maximum number of rental days')
                             else: raise forms.ValidationError('Please enter the retire date')
                         elif t1 == 'IndividualProduct':
                             if iid == '':
@@ -94,8 +94,6 @@ class ProductForm(Formless):
         product.price=self.cleaned_data.get('price')
         product.quantity=self.cleaned_data.get('quantity')
         product.status=self.cleaned_data.get('status')
-        product.TITLE=self.cleaned_data.get('type')
-
         if p1 == 'BulkProduct':
             product.reorder_trigger=self.cleaned_data.get('reorder_trigger')
             product.reorder_quantity=self.cleaned_data.get('reorder_quantity')
