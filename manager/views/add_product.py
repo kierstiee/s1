@@ -44,12 +44,13 @@ class ProductForm(Formless):
         d1 = self.cleaned_data.get('description')
         p1 = self.cleaned_data.get('price')
         q1 = self.cleaned_data.get('quantity')
+        t1 = self.cleaned_data.get('TITLE')
 
         if n1:
             if d1:
                 if p1:
                     if q1:
-                        if type == 'BulkProduct':
+                        if t1 == 'BulkProduct':
                             rt = self.cleaned_data.get('reorder_trigger')
                             rq = self.cleaned_data.get('reorder_quantity')
                             if rt:
@@ -57,7 +58,7 @@ class ProductForm(Formless):
                                     return self.cleaned_data
                                 else: raise forms.ValidationError('Please enter a reorder quantity')
                             else: raise forms.ValidationError('Please enter a reorder trigger amount')
-                        elif type == 'RentalProduct':
+                        elif t1 == 'RentalProduct':
                             iid = self.cleaned_data.get('itemID')
                             rd = self.cleaned_data.get('retire_date')
                             mrd = self.cleaned_data.get('max_rental_days')
@@ -70,7 +71,7 @@ class ProductForm(Formless):
                                 else:
                                     raise forms.ValidationError('Please enter the maximum number of rental days')
                             else: raise forms.ValidationError('Please enter the retire date')
-                        elif type=='IndividualProduct':
+                        elif t1 == 'IndividualProduct':
                             iid = self.cleaned_data.get('itemID')
                             if not iid:
                                 raise forms.ValidationError('Please enter an item ID')
@@ -86,7 +87,7 @@ class ProductForm(Formless):
             raise forms.ValidationError('Please enter the name')
 
     def commit(self):
-        p1 = self.cleaned_data.get('type')
+        p1 = self.cleaned_data.get('TITLE')
         if p1 == 'BulkProduct':
             p2 = cmod.BulkProduct.objects.create(name=self.cleaned_data.get('name'),
                                                  description=self.cleaned_data.get('description'),
