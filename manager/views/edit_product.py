@@ -7,7 +7,6 @@ from formlib import Formless
 from django import forms
 
 
-
 @view_function
 def process_request(request, real_product:cmod.Product):
     something = forms.model_to_dict(real_product)
@@ -24,14 +23,13 @@ def process_request(request, real_product:cmod.Product):
 class ProductForm(Formless):
 
     def init(self):
+
         self.fields['name'] = forms.CharField(label='Name')
         self.fields['description'] = forms.CharField(label='Describe the product')
         self.fields['price'] = forms.CharField(label='Price')
         self.fields['category'] = forms.ModelChoiceField(label='Category',queryset=cmod.Category.objects.all())
         self.fields['status'] = forms.ChoiceField(label='Status', choices=cmod.Product.STATUS_CHOICES)
         self.fields['quantity'] = forms.CharField(label='Quantity')
-        self.fields['type'] = forms.ChoiceField(label='Type', choices = cmod.Product.TYPE_CHOICES)
-        # , widget=forms.HiddenInput())
 
         self.fields['reorder_trigger'] = forms.CharField(required=False, label='Reorder Trigger')
         self.fields['reorder_quantity'] = forms.CharField(required=False, label='Reorder Quantity')
@@ -64,6 +62,7 @@ class ProductForm(Formless):
                             rd = self.cleaned_data.get('retire_date')
                             mrd = self.cleaned_data.get('max_rental_days')
                             if rd:
+                                print('>>>>>>>>>>>>>>>>>>',rd)
                                 if mrd:
                                     if iid:
                                         return self.cleaned_data
@@ -87,51 +86,23 @@ class ProductForm(Formless):
         else:
             raise forms.ValidationError('Please enter the name')
 
-
     def commit(self,product):
-        p1 = self.cleaned_data.get('type')
+        p1 = product.type
         product.name=self.cleaned_data.get('name')
         product.description=self.cleaned_data.get('description')
         product.category=self.cleaned_data.get('category')
         product.price=self.cleaned_data.get('price')
         product.quantity=self.cleaned_data.get('quantity')
         product.status=self.cleaned_data.get('status')
-        product.type=self.cleaned_data.get('type')
-        if p1 == 'BulkProduct':
-            product.reorder_trigger=self.cleaned_data.get('reorder_trigger')
-            product.reorder_quantity=self.cleaned_data.get('reorder_quantity')
 
-            product.name=self.cleaned_data.get('name')
-            product.description=self.cleaned_data.get('description')
-            product.category=self.cleaned_data.get('category')
-            product.price=self.cleaned_data.get('price')
-            product.quantity=self.cleaned_data.get('quantity')
-            product.status=self.cleaned_data.get('status')
+        if p1 == 'BulkProduct':
             product.reorder_trigger=self.cleaned_data.get('reorder_trigger')
             product.reorder_quantity=self.cleaned_data.get('reorder_quantity')
             product.save()
         elif p1 == 'IndividualProduct':
             product.itemID=self.cleaned_data.get('itemID')
-
-            product.name=self.cleaned_data.get('name')
-            product.description=self.cleaned_data.get('description')
-            product.category=self.cleaned_data.get('category')
-            product.price=self.cleaned_data.get('price')
-            product.quantity=self.cleaned_data.get('quantity')
-            product.status=self.cleaned_data.get('status')
-            product.itemID=self.cleaned_data.get('itemID')
             product.save()
         elif p1 == 'RentalProduct':
-            product.itemID=self.cleaned_data.get('itemID')
-            product.retire_date=self.cleaned_data.get('retire_date')
-            product.max_rental_days=self.cleaned_data.get('max_rental_days')
-
-            product.name=self.cleaned_data.get('name')
-            product.description=self.cleaned_data.get('description')
-            product.category=self.cleaned_data.get('category')
-            product.price=self.cleaned_data.get('price')
-            product.quantity=self.cleaned_data.get('quantity')
-            product.status=self.cleaned_data.get('status')
             product.itemID=self.cleaned_data.get('itemID')
             product.retire_date=self.cleaned_data.get('retire_date')
             product.max_rental_days=self.cleaned_data.get('max_rental_days')
