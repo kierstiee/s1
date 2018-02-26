@@ -19,7 +19,7 @@ def process_request(request, real_product:cmod.Product):
         'myform': form,
         jscontext('title'): title
     }
-    return request.dmp_render('edit_product.html', context)
+    return request.dmp.render('edit_product.html', context)
 
 
 class ProductForm(Formless):

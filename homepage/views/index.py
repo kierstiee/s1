@@ -11,5 +11,5 @@ def process_request(request):
         'welcome': 'Welcome to FOMO! We are dedicated to providing the best service in Utah Valley!',
 
     }
-    return request.dmp_render('index.html', context)
+    return request.dmp.render('index.html', context)
 
