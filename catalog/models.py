@@ -56,8 +56,7 @@ class RentalProduct(Product):
 
 class ProductImage(models.Model):
     filename = models.ImageField(upload_to='products')
-    product = models.ForeignKey(Product, related_name="images")
-
+    product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
 
     def image_url(self):
         """Returns single image"""
