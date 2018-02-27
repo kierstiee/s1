@@ -1,5 +1,7 @@
 from django.db import models
 from polymorphic.models import PolymorphicModel
+import os
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -50,3 +52,19 @@ class RentalProduct(Product):
     itemID = models.TextField()
     retire_date = models.DateField(null=True, blank=True)
     max_rental_days = models.IntegerField(default=0)
+
+
+class ProductImage(models.Model):
+    filename = models.ImageField(upload_to='products')
+    product = models.ForeignKey(Product, related_name="images")
+
+
+    def image_url(self):
+        """Returns single image"""
+        # if no image return notfound.jpg
+        url = settings.STATIC_URL
+
+    def image_urls(self):
+        """Returns list of images"""
+        # if no image return [notfound.jpg]
+
