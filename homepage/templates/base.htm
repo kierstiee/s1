@@ -16,7 +16,6 @@
         <link rel="stylesheet" href="${ STATIC_URL }homepage/media/bootstrap/css/bootstrap-theme.min.css"/>
         <link rel="icon" href="${ STATIC_URL }homepage/media/piano_icon.png">
         ${ django_mako_plus.links(self) } <!--G1-->
-
     </head>
     <body>
         <%block name="maintenance">Something</%block>
@@ -25,6 +24,12 @@
             <nav class="navbar navbar-default">
                 <%block name="navigate"></%block>
             </nav>
+            <div id="side">
+                <%block name="sider"></%block>
+                <div id="sidebottom">
+                    <%block name="longbottom"></%block>
+                </div>
+            </div>
         </header>
         <main>
             <%block name="columns">
