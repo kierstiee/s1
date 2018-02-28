@@ -18,23 +18,24 @@
         ${ django_mako_plus.links(self) } <!--G1-->
     </head>
     <body>
+        <a href="#content">Skip to Main Content</a>
         <%block name="maintenance">Something</%block>
 
-        <header>
-            <nav class="navbar navbar-default">
-                <%block name="navigate"></%block>
-            </nav>
-            <div id="side">
-                <%block name="sider"></%block>
-                <div id="sidebottom">
-                    <%block name="longbottom"></%block>
-                </div>
+    <header>
+        <div id="side">
+            <%block name="sider"></%block>
+            <div id="sidebottom">
+                <%block name="longbottom"></%block>
             </div>
-        </header>
-        <main>
+        </div>
+        <nav class="navbar navbar-default">
+            <%block name="navigate"></%block>
+        </nav>
+    </header>
+    <main>
             <%block name="columns">
             </%block>
-        </main>
+    </main>
 
     </body>
 

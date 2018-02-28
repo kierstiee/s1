@@ -52,7 +52,7 @@
             <ul class="nav navbar-nav navbar-right">
                 %if request.user.is_authenticated:
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                aria-expanded="false">Welcome!<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/account/account/">My Account</a></li>
@@ -62,7 +62,7 @@
                     %endif
                     %if not request.user.is_authenticated:
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                aria-expanded="false">Account<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="/account/signup/">Sign Up</a></li>
