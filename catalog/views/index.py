@@ -6,9 +6,9 @@ from catalog import models as cmod
 
 @view_function
 def process_request(request):
-    utc_time = datetime.utcnow()
+    c_list = cmod.Category.objects.all()
     context = {
         # sent to index.html:
-        'utc_time': utc_time,
+        'list': c_list,
     }
     return request.dmp.render('index.html', context)

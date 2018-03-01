@@ -36,6 +36,30 @@ class Product(PolymorphicModel):
     status = models.TextField(choices=STATUS_CHOICES,default='A')
 
 
+    def image_url(self):
+        """Returns first image of product"""
+        p1 = Product(self)
+        # if no image return notfound.jpg
+        for pi in p1.images.all():
+            if pi.filename:
+                url = settings.STATIC_URL + '/catalog/media/products/' + pi.filename[0] + '.jpg'
+            else:
+                url = settings.STATIC_URL + '/catalog/media/products/image_unavailable.gif'
+            return url
+
+    def image_urls(self):
+        """Returns list of all images of a product"""
+        # if no image return [notfound.jpg]
+        p1 = Product(self)
+        url = []
+        for pi in p1.images.all():
+            if pi.filename:
+                for fn in pi.filename:
+                    url.append(settings.STATIC_URL + '/catalog/media/products/' + fn + '.jpg')
+            else:
+                url = settings.STATIC_URL + '/catalog/media/products/image_unavailable.gif'
+            return url
+
 class BulkProduct(Product):
     TITLE = 'BulkProduct'
     reorder_trigger = models.IntegerField()
@@ -55,15 +79,9 @@ class RentalProduct(Product):
 
 
 class ProductImage(models.Model):
-    filename = models.ImageField(upload_to='products')
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
+    filename = models.TextField()
+    create_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
 
-    def image_url(self):
-        """Returns single image"""
-        # if no image return notfound.jpg
-        url = settings.STATIC_URL
-
-    def image_urls(self):
-        """Returns list of images"""
-        # if no image return [notfound.jpg]
-
+# NOT_FOUND_PRODUCT_IMAGE = ProductImage()
