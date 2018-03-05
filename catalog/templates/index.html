@@ -3,10 +3,17 @@
 <%block name="left">
     <div class="content-left">
         <ul>
-            <li>All Products</li>
+            <li><a href="/catalog/index/0/" class="${ if request.resolver_match.url_name == "/catalog/index/0/" 'selected' endif }">All Products</a></li>
             %for cat in list:
-            <li>${ cat }</li>
+                <li><a href="/catalog/index/${ cat.id }" class="selected">${ cat }</a></li>
             %endfor
         </ul>
+    </div>
+</%block>
+
+<%block name="content">
+    <div class="content">
+        <h1 align="center">${ name }</h1>
+        <ul id="catalog"></ul>
     </div>
 </%block>

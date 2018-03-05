@@ -3,5 +3,9 @@
 }
 
 .content-left li {
-    font-size: 24px
+    font-size: 24px;
+}
+
+a.selected {
+    color: #4286F4;
 }
