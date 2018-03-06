@@ -81,7 +81,5 @@ class RentalProduct(Product):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
     filename = models.TextField()
-    create_date = models.DateTimeField(auto_now_add=True)
-    edit_date = models.DateTimeField(auto_now=True)
 
 # NOT_FOUND_PRODUCT_IMAGE = ProductImage()

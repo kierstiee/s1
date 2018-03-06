@@ -3,9 +3,13 @@
 <%block name="left">
     <div class="content-left">
         <ul>
-            <li><a href="/catalog/index/0/" class="${ if request.resolver_match.url_name == "/catalog/index/0/" 'selected' endif }">All Products</a></li>
+            <li>
+                <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
+                    All Products
+                </a>
+            </li>
             %for cat in list:
-                <li><a href="/catalog/index/${ cat.id }" class="selected">${ cat }</a></li>
+                <li><a href="/catalog/index/${ cat.id }" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
             %endfor
         </ul>
     </div>
@@ -15,5 +19,10 @@
     <div class="content">
         <h1 align="center">${ name }</h1>
         <ul id="catalog"></ul>
+        <ul>
+            %for p in p_list:
+                <li>${ p.image_urls }</li>
+            %endfor
+        </ul>
     </div>
 </%block>

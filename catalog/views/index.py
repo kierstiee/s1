@@ -11,11 +11,16 @@ def process_request(request, id=0):
         catalog = cmod.Category.objects.get(id=id)
         name = catalog.name
         category=catalog
-
+        p_list = cmod.Product.objects.filter(category=category)
+        for product in p_list:
+            pic_list = cmod.ProductImage.objects.filter(product=product)
     else:
         name = 'Products'
         catalog = cmod.Category.objects.all()
         category=None
+        p_list = cmod.Product.objects.all()
+        for product in p_list:
+            pic_list = cmod.ProductImage.objects.filter(product=product)
 
     context = {
         # sent to index.html:
@@ -23,5 +28,7 @@ def process_request(request, id=0):
         'catalog': catalog,
         'name': name,
         'category': category,
+        'p_list': p_list,
+        'pic_list': pic_list,
     }
     return request.dmp.render('index.html', context)
