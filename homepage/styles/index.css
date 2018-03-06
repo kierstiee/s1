@@ -13,6 +13,13 @@ header h1 {
     line-height: 1.5;
 }
 
+header h2 {
+    color: #6AA0F6;
+    font-family: "Verdana";
+    line-height: 1.5;
+    size: 24;
+}
+
 #side {
     position: absolute;
     padding-top:80px;

@@ -9,7 +9,8 @@ def process_request(request):
     quote = 'Lorem ipsum dolor sit amet, consectetaur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
     context = {
         # sent to index.html:
-        'welcome': 'Welcome to FOMO! Our family-run business is dedicated to providing you with the best musical experience in Utah Valley!',
+        'welcome': 'Welcome to FOMO!',
+        'welcome2': 'Our family-run business is dedicated to providing you with the best musical experience in Utah Valley!',
         'text': quote,
     }
     return request.dmp.render('index.html', context)

@@ -2,7 +2,7 @@
 
 <%block name="left">
     <div class="content-left">
-        <ul>
+        <ul id="menu">
             <li>
                 <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
                     All Products
@@ -18,11 +18,9 @@
 <%block name="content">
     <div class="content">
         <h1 align="center">${ name }</h1>
-        <ul id="catalog"></ul>
-        <ul>
-            %for p in p_list:
-                <li>${ p.image_urls }</li>
-            %endfor
+        <ul id="catalog">
+            <div id="products"></div>
         </ul>
+        <h3 class="paginate" align="right">${ num_pages }</h3>
     </div>
 </%block>
