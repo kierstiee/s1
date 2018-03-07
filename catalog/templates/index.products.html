@@ -1,0 +1,19 @@
+<%inherit file="/homepage/templates/base_ajax.htm" />
+
+<%! from catalog import models as cmod %>
+
+<%block name="content">
+    <h3 class="paginate" align="right">
+        <a href="" id="left-nav" class="selected"> << </a> Page ${ pnum } of ${ num_pages }<a href="" id="right-nav" class="selected"> >> </a>
+    </h3>
+
+    <ul id="product_list">
+        %for product in qry:
+            <li class="product_tile">
+                <div class="title">${ product.name }</div>
+                <div class="price">$${ product.price }</div>
+            </li>
+        %endfor
+    </ul>
+</%block>
+

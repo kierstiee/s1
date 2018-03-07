@@ -13,8 +13,6 @@ def process_request(request, id=0):
         name = catalog.name
         category=catalog
         p_list = cmod.Product.objects.filter(category=category)
-        for product in p_list:
-            pic_list = cmod.ProductImage.objects.filter(product=product)
     else:
         name = 'Products'
         catalog = cmod.Category.objects.all()
@@ -23,6 +21,7 @@ def process_request(request, id=0):
 
     num_pages = p_list.count()/6
     num_pages = math.ceil(num_pages)
+
     context = {
         # sent to index.html:
         'list': c_list,
@@ -31,19 +30,24 @@ def process_request(request, id=0):
         'category': category,
         'p_list': p_list,
         'num_pages': num_pages,
+        jscontext('num_pages'): num_pages,
+        jscontext('cid'): id,
     }
     return request.dmp.render('index.html', context)
 
 
-def products(request, cat:cmod.Category=None, pnum:int=1):
+@view_function
+def products(request, cat:cmod.Category=None, pnum:int=0):
     qry = cmod.Product.objects.all()
+    p_list = cmod.Product.objects.all()
     if cat is not None:
         qry = qry.filter(category=cat)
-    page_show = pnum*6
-    qry = qry[page_show-6:page_show]
-
-
+        p_list = p_list.filter(category=cat)
+    num_pages = math.ceil(p_list.count()/6)
+    qry = qry[pnum*6:(pnum+1)*6]
     context = {
         'qry': qry,
+        'pnum': pnum+1,
+        'num_pages': num_pages,
     }
     return request.dmp.render('index.products.html',context)
