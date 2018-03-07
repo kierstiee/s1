@@ -19,8 +19,7 @@ def process_request(request, id=0):
         category=None
         p_list = cmod.Product.objects.all()
 
-    num_pages = p_list.count()/6
-    num_pages = math.ceil(num_pages)
+    num_pages = math.ceil(p_list.count()/6)
 
     context = {
         # sent to index.html:
@@ -29,7 +28,6 @@ def process_request(request, id=0):
         'name': name,
         'category': category,
         'p_list': p_list,
-        'num_pages': num_pages,
         jscontext('num_pages'): num_pages,
         jscontext('cid'): id,
     }

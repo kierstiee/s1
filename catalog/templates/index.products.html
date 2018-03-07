@@ -4,7 +4,9 @@
 
 <%block name="content">
     <h3 class="paginate" align="right">
-        <a href="" id="left-nav" class="selected"> << </a> Page ${ pnum } of ${ num_pages }<a href="" id="right-nav" class="selected"> >> </a>
+        <a onclick="change_page(-1)" id="left-nav" class="selected"> << </a>
+         Page <span id="current_page">${ pnum }</span> of ${ num_pages }
+        <a onclick="change_page(1)" id="right-nav" class="selected"> >> </a>
     </h3>
 
     <ul id="product_list">
