@@ -40,25 +40,25 @@ class Product(PolymorphicModel):
         """Returns first image of product"""
         p1 = Product(self)
         # if no image return notfound.jpg
-        for pi in p1.images.all():
-            if pi.filename:
+        if not p1.images.all():
+            url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
+        else:
+            for pi in p1.images.all():
                 url = settings.STATIC_URL + 'catalog/media/products/' + pi.filename
-            else:
-                url = settings.STATIC_URL + 'catalog/media/products/notfound.jpg'
-            return url
+        return url
 
     def image_urls(self):
         """Returns list of all images of a product"""
         # if no image return [notfound.jpg]
         p1 = Product(self)
         url = []
-        for pi in p1.images.all():
-            if pi.filename:
+        if not p1.images.all():
+            url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
+        else:
+            for pi in p1.images.all():
                 for fn in pi.filename:
                     url.append(settings.STATIC_URL + 'catalog/media/products/' + fn + '.jpg')
-            else:
-                url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
-            return url
+        return url
 
 class BulkProduct(Product):
     TITLE = 'BulkProduct'
