@@ -13,7 +13,7 @@
         <%count = 0%>
         %for product in qry:
             <li class="product_tile">
-                <div class="title">${ product.name } </div>
+                <div class="title" align="center">${ product.name } </div>
                 <div class="price">$${ product.price }</div>
                 <img src="${ urls[count] }" class="pr_image">
             </li>
