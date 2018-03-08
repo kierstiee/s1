@@ -37,15 +37,18 @@ def process_request(request, id=0):
 @view_function
 def products(request, cat:cmod.Category=None, pnum:int=0):
     qry = cmod.Product.objects.all()
-    p_list = cmod.Product.objects.all()
+    prod = qry[6]
     if cat is not None:
         qry = qry.filter(category=cat)
-        p_list = p_list.filter(category=cat)
-    num_pages = math.ceil(p_list.count()/6)
+    num_pages = math.ceil(qry.count()/6)
     qry = qry[pnum*6:(pnum+1)*6]
+    urls = []
+    for prod in qry:
+        urls.append(cmod.Product.image_url(prod.id))
     context = {
         'qry': qry,
         'pnum': pnum+1,
         'num_pages': num_pages,
+        'urls': urls,
     }
     return request.dmp.render('index.products.html',context)

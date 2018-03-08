@@ -42,9 +42,9 @@ class Product(PolymorphicModel):
         # if no image return notfound.jpg
         for pi in p1.images.all():
             if pi.filename:
-                url = settings.STATIC_URL + '/catalog/media/products/' + pi.filename[0] + '.jpg'
+                url = settings.STATIC_URL + 'catalog/media/products/' + pi.filename
             else:
-                url = settings.STATIC_URL + '/catalog/media/products/image_unavailable.gif'
+                url = settings.STATIC_URL + 'catalog/media/products/notfound.jpg'
             return url
 
     def image_urls(self):
@@ -55,9 +55,9 @@ class Product(PolymorphicModel):
         for pi in p1.images.all():
             if pi.filename:
                 for fn in pi.filename:
-                    url.append(settings.STATIC_URL + '/catalog/media/products/' + fn + '.jpg')
+                    url.append(settings.STATIC_URL + 'catalog/media/products/' + fn + '.jpg')
             else:
-                url = settings.STATIC_URL + '/catalog/media/products/image_unavailable.gif'
+                url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
             return url
 
 class BulkProduct(Product):
