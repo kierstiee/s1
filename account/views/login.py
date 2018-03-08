@@ -18,7 +18,7 @@ def process_request(request):
     context = {
         'myform': form,
     }
-    return request.dmp_render('login.html', context)
+    return request.dmp.render('login.html', context)
 
 
 class LoginForm(Formless): # extending formlib.Form, not Django's forms.Form
