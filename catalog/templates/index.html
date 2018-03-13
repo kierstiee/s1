@@ -1,20 +1,5 @@
 <%inherit file="app_base.htm" />
 
-<%block name="left">
-    <div class="content-left">
-        <ul id="menu">
-            <li>
-                <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
-                    All Products
-                </a>
-            </li>
-            %for cat in list:
-                <li><a href="/catalog/index/${ cat.id }" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
-            %endfor
-        </ul>
-    </div>
-</%block>
-
 <%block name="content">
     <div class="content">
         <h1 align="center">${ name }</h1>
