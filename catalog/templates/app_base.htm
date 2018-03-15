@@ -9,17 +9,18 @@
     <div id="content_top"> <%block name="top"></%block></div>
     <div id="content_middle">
         <div id="content_left">
-            <ul id="menu">
-                <li>
-                    <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
-                        All Products
-                    </a>
-                </li>
-                %for cat in list:
-                    <li><a href="/catalog/index/${ cat.id }" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
-                %endfor
-            </ul>
-            <%block name="left"></%block>
+            <%block name="left">
+                <ul id="menu">
+                    <li>
+                        <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
+                            All Products
+                        </a>
+                    </li>
+                    %for cat in list:
+                        <li><a href="/catalog/index/${ cat.id }" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
+                    %endfor
+                </ul>
+            </%block>
         </div>
         <div id="content_right"><%block name="right"></%block></div>
         <div id="content"><%block name="middle"></%block><%block name="content"></%block></div>

@@ -1,0 +1,33 @@
+#first_pic {
+    height: 250px;
+    width: 250px;
+}
+
+h2 {
+    font-size: 25px;
+}
+
+.pictures {
+    float: left;
+}
+
+.thumbnail {
+    margin-top: 10px;
+    border: 0px;
+    box-shadow: none;
+}
+
+.thumbnail > ul > li {
+    list-style-type: none;
+    display: flex;
+}
+
+.thumbnail > ul > li > img {
+    margin: auto;
+    width: 75px;
+    height: 75px;
+}
+
+.btn-primary {
+    color:black;
+}
