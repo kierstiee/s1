@@ -4,7 +4,7 @@
 }
 
 h2 {
-    font-size: 25px;
+    font-size: 20px;
 }
 
 .pictures {
@@ -12,6 +12,7 @@ h2 {
 }
 
 .thumbnail {
+    float: left;
     margin-top: 10px;
     border: 0px;
     box-shadow: none;
