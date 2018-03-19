@@ -17,14 +17,26 @@
                         </a>
                     </li>
                     %for cat in list:
-                        <li><a href="/catalog/index/${ cat.id }" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
+                        <li><a href="/catalog/index/${ cat.id | h}" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
                     %endfor
                 </ul>
             </%block>
         </div>
         <div id="content_right">
             <%block name="right">
-
+                <ol id="product_list">
+                    <%count = 0%>
+                    %for product in request.last_five:
+                         <a href="/catalog/detail/${ product.id }">
+                             <li class="product_tile">
+                                <div class="title" align="center">${ product.name } </div>
+                                <div class="price">$${ product.price }</div>
+                                <img src="${ cmod.Product.image_url(product.id) }" class="pr_image">
+                            </li>
+                        </a>
+                    <%count = count + 1%>
+                    %endfor
+                </ol>
             </%block>
         </div>
         <div id="content"><%block name="middle"></%block><%block name="content"></%block></div>
