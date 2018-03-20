@@ -25,15 +25,14 @@ class LastFiveMiddleware:
         for ids in product_ids:
             ids = int(ids)
             products.append(cmod.Product.objects.get(id=ids))
-        request.last_five = products[:5]
-        # request.last_five = request.last_five.reverse()
+        request.last_five = products[:6]
 
         response = self.get_response(request) # what calls the view
 
         pids = []
         for product in request.last_five:
             pids.append(product.id)
-        new_pids = pids[:5]
+        new_pids = pids[:6]
         request.session['last_5'] = new_pids
 
         return response
