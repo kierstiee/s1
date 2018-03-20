@@ -24,22 +24,21 @@
         </div>
         <div id="content_right">
             <%block name="right">
-                <ol id="product_list">
+                <ol id="pr_list">
                     <%count = 0%>
-                    %for product in request.last_five:
+                    %for product in request.last_five[1:6]:
                          <a href="/catalog/detail/${ product.id }">
-                             <li class="product_tile">
-                                <div class="title" align="center">${ product.name } </div>
-                                <div class="price">$${ product.price }</div>
-                                <img src="${ cmod.Product.image_url(product.id) }" class="pr_image">
+                             <li class="pr_tile">
+                                 <img src="${ cmod.Product.image_url(product.id) }" class="pr_image">
+                                 <div class="title" align="center">${ product.name } </div>
                             </li>
                         </a>
                     <%count = count + 1%>
                     %endfor
                 </ol>
-            </%block>
-        </div>
-        <div id="content"><%block name="middle"></%block><%block name="content"></%block></div>
+        </%block>
+</div>
+<div id="content"><%block name="middle"></%block><%block name="content"></%block></div>
     </div>
     <div id="content_bottom"><%block name="bottom"></%block></div>
 </%block>

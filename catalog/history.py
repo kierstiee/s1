@@ -10,31 +10,30 @@ class LastFiveMiddleware:
         self.get_response = get_response
         # One-time configuration and initialization.
 
-    def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
+    def remove_duplicates(self, list):
+        output = []
+        set = set()
+        for value in list:
+            if value not in set:
+                output.append(value)
+                set.add(value)
+        return output
 
-        # request.session -> Dictionary
-        # product_ids = session.get ids from the session
-        product_ids = request.session.get('last_5',['326','326','326','326','326','326','326'])
+    def __call__(self, request):
+        product_ids = request.session.get('last_5',['326','327','328','329','330','331','332'])
         products = []
-        # products = [ convert list of ids to actual objects ]
         for ids in product_ids:
             ids = int(ids)
             products.append(cmod.Product.objects.get(id=ids))
-        products.reverse()
-        # request.last_five = [ product objects ]
-        request.last_five = islice(products,6)
+        request.last_five = products[:5]
+        # request.last_five = request.last_five.reverse()
 
         response = self.get_response(request) # what calls the view
-        # Code to be executed for each request/response after
-        # the view is called.
 
-        # convert request last_five to list of ids
         pids = []
         for product in request.last_five:
             pids.append(product.id)
-            # set the list of ids into the session
-        request.session['listof5'] = pids
+        new_pids = pids[:5]
+        request.session['last_5'] = new_pids
 
         return response

@@ -10,6 +10,10 @@ def process_request(request, id):
     c_list = cmod.Category.objects.all()
     urls = cmod.Product.image_urls(id)
     url = cmod.Product.image_url(id)
+    products = request.last_five
+    if product in products:
+        products.remove(product)
+    request.last_five = [product] + request.last_five
 
     context = {
         'product': product,
