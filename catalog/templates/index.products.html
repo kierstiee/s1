@@ -12,14 +12,12 @@
     <ul id="product_list">
         <%count = 0%>
         %for product in qry:
-             <a href="/catalog/detail/${ product.id }">
-                 <li class="product_tile">
-                    <div class="title" align="center">${ product.name } </div>
-                    <div class="price">$${ product.price }</div>
-                    <img src="${ urls[count] }" class="pr_image">
-                </li>
-            </a>
-        <%count = count + 1%>
+            <li class="product_tile">
+                <div class="title" align="center">${ product.name } </div>
+                <div class="price">$${ product.price }</div>
+                <img src="${ urls[count] }" class="pr_image">
+            </li>
+            <%count = count + 1%>
         %endfor
     </ul>
 </%block>

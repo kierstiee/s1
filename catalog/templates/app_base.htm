@@ -1,5 +1,4 @@
 <%inherit file="/homepage/templates/base.htm" />
-<%! from catalog import models as cmod %>
 
 <%block name="maintenance">
     <h4 align="center">We're currently upgrading our site for your benefit</h4>
@@ -8,45 +7,9 @@
 <%block name="columns">
     <div id="content_top"> <%block name="top"></%block></div>
     <div id="content_middle">
-        <div id="content_left">
-            <%block name="left">
-                <ul id="menu">
-                    <li>
-                        <a href="/catalog/index/0/" class="${ 'selected' if category is None else ''  }">
-                            All Products
-                        </a>
-                    </li>
-                    %for cat in list:
-                        <li><a href="/catalog/index/${ cat.id | h}" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
-                    %endfor
-                </ul>
-            </%block>
-        </div>
-        <div id="content_right">
-            <%block name="right">
-                <ol id="pr_list">
-                    <%list_start = 0%>
-                    <%list_end = len(request.last_five)%>
-                    %if product in request.last_five:
-                        <%list_start = 1%>
-                    %else:
-                        <%list_end = len(request.last_five) - 1%>
-                    %endif
-                    %for pr in request.last_five[list_start:list_end]:
-                         <a href="/catalog/detail/${ pr.id }">
-                             <li class="pr_tile">
-                                 <img src="${ cmod.Product.image_url(pr.id) }" class="pr_image">
-                                 <div class="title" align="center">${ pr.name } </div>
-                            </li>
-                        </a>
-                    %endfor
-                </ol>
-            </%block>
-        </div>
-        <div id="content">
-            <%block name="middle"></%block>
-            <%block name="content"></%block>
-        </div>
+        <div id="content_left"><%block name="left"></%block></div>
+        <div id="content_right"><%block name="right"></%block></div>
+        <div id="content"><%block name="middle"></%block><%block name="content"></%block></div>
     </div>
     <div id="content_bottom"><%block name="bottom"></%block></div>
 </%block>

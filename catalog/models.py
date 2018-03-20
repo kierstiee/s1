@@ -36,18 +36,6 @@ class Product(PolymorphicModel):
     status = models.TextField(choices=STATUS_CHOICES,default='A')
 
 
-    def image_urls(self):
-        """Returns list of all images of a product"""
-        # if no image return [image_unavailable.gif]
-        p1 = Product(self)
-        url = []
-        if not p1.images.all():
-            url.append(settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif')
-        else:
-            for pi in p1.images.all():
-                url.append(settings.STATIC_URL + 'catalog/media/products/' + pi.filename)
-        return url
-
     def image_url(self):
         """Returns first image of product"""
         p1 = Product(self)
@@ -55,7 +43,21 @@ class Product(PolymorphicModel):
         if not p1.images.all():
             url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
         else:
-            url = Product.image_urls(p1.id)[0]
+            for pi in p1.images.all():
+                url = settings.STATIC_URL + 'catalog/media/products/' + pi.filename
+        return url
+
+    def image_urls(self):
+        """Returns list of all images of a product"""
+        # if no image return [notfound.jpg]
+        p1 = Product(self)
+        url = []
+        if not p1.images.all():
+            url = settings.STATIC_URL + 'catalog/media/products/image_unavailable.gif'
+        else:
+            for pi in p1.images.all():
+                for fn in pi.filename:
+                    url.append(settings.STATIC_URL + 'catalog/media/products/' + fn + '.jpg')
         return url
 
 class BulkProduct(Product):

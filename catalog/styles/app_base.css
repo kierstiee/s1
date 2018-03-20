@@ -1,6 +1,5 @@
 #content_top {
     padding: 3px;
-
 }
 
 #content_middle {
@@ -15,11 +14,6 @@
     top: 0;
     height: 100%;
     padding: 10px;
-}
-
-#content_left li {
-    font-size: 24px;
-
 }
 
 #content {
@@ -58,44 +52,4 @@
 
 #piano {
     padding: 5px;
-
-}
-
-#menu {
-    list-style-type: none;
-
-}
-
-a.selected {
-    color: #4286F4;
-
-}
-
-.pr_list {
-    font-size: 16px;
-    display: flex;
-    right:25%;
-    left:25%;
-}
-
-#pr_list > a > li > .title {
-    position: relative;
-    bottom: 0px;
-    background-color: #CCCCCC;
-    border-radius: 5px;
-    padding:2px;
-    color: #000000
-}
-
-.pr_tile {
-    list-style-type: none;
-    width: 75px;
-    height: 75px;
-    margin-top:25px;
-}
-
-.pr_tile img {
-    margin: auto;
-    width:100%;
-    height:100%;
 }

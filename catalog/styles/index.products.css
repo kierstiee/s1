@@ -4,9 +4,10 @@
     margin: 0;
 }
 
-#product_list > a > li {
+#product_list > li {
     display: inline-block;
     margin: 12px 18px;
+
     border-radius: 15px;
     padding: 12px;
     width: 150px;
@@ -17,17 +18,16 @@
     position: relative;
 }
 
-#product_list > a > li > .price {
+#product_list > li > .price {
     position: absolute;
     right: 8px;
     top: 2px;
     background-color: #F3A847;
     border-radius: 15px;
     padding: 4px;
-    color: #000000
 }
 
-#product_list > a > li > .title {
+#product_list > li > .title {
     position: absolute;
     bottom: 0px;
     background-color: #CCCCCC;
@@ -35,10 +35,9 @@
     padding:2px;
     right:25%;
     left:25%;
-    color: #000000
 }
 
-#product_list > a > li > .pr_image {
+#product_list > li > .pr_image {
     width: 100%;
     height: 100%;
 }
