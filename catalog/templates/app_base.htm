@@ -25,15 +25,20 @@
         <div id="content_right">
             <%block name="right">
                 <ol id="pr_list">
-                    <%count = 0%>
-                    %for product in request.last_five[1:6]:
-                         <a href="/catalog/detail/${ product.id }">
+                    <%list_start = 0%>
+                    <%list_end = len(request.last_five)%>
+                    %if product in request.last_five:
+                        <%list_start = 1%>
+                    %else:
+                        <%list_end = len(request.last_five) - 1%>
+                    %endif
+                    %for pr in request.last_five[list_start:list_end]:
+                         <a href="/catalog/detail/${ pr.id }">
                              <li class="pr_tile">
-                                 <img src="${ cmod.Product.image_url(product.id) }" class="pr_image">
-                                 <div class="title" align="center">${ product.name } </div>
+                                 <img src="${ cmod.Product.image_url(pr.id) }" class="pr_image">
+                                 <div class="title" align="center">${ pr.name } </div>
                             </li>
                         </a>
-                    <%count = count + 1%>
                     %endfor
                 </ol>
             </%block>

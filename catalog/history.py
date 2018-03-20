@@ -10,15 +10,6 @@ class LastFiveMiddleware:
         self.get_response = get_response
         # One-time configuration and initialization.
 
-    def remove_duplicates(self, list):
-        output = []
-        set = set()
-        for value in list:
-            if value not in set:
-                output.append(value)
-                set.add(value)
-        return output
-
     def __call__(self, request):
         product_ids = request.session.get('last_5',['326','327','328','329','330','331','332'])
         products = []
