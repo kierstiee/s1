@@ -36,7 +36,7 @@
                          <a href="/catalog/detail/${ pr.id }">
                              <li class="pr_tile">
                                  <img src="${ cmod.Product.image_url(pr.id) }" class="pr_image">
-                                 <div class="title" align="center">${ pr.name } </div>
+                                 <div class="title" align="center">${ pr.name | h} </div>
                             </li>
                         </a>
                     %endfor

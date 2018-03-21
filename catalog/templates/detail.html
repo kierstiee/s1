@@ -4,7 +4,7 @@
 
 <%block name="content">
     <div class="content">
-        <h1 align="center">${ product.name }</h1>
+        <h1 align="center">${ product.name | h}</h1>
         <div class="pictures">
             <div class="thumbnail">
                 <ul>
@@ -17,7 +17,7 @@
             </div>
             <img alt="${ product.name }" id="first_pic">
         </div>
-        <h2>${ product.description }</h2>
+        <h2>${ product.description | h}</h2>
         %if product.TITLE == 'BulkProduct':
             <form>
                 Quantity:
