@@ -23,7 +23,7 @@ def process_request(request, id=0):
 
     context = {
         # sent to index.html:
-        'list': c_list,
+        'c_list': c_list,
         'catalog': catalog,
         'name': name,
         'category': category,

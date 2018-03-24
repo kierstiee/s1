@@ -4,7 +4,9 @@
 
 <%block name="content">
     <div class="content">
-        %if products is not None:
+        %if products is None:
+            Product not found.
+        %else:
             %for product in products:
                  <a href="/catalog/detail/${ product.id }">
                      <li class="product_tile">
@@ -14,8 +16,6 @@
                     </li>
                 </a>
             %endfor
-        %else:
-            <p align="center">Product not found.</p>
         %endif
     </div>
 </%block>

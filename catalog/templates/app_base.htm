@@ -16,7 +16,7 @@
                             All Products
                         </a>
                     </li>
-                    %for cat in list:
+                    %for cat in c_list:
                         <li><a href="/catalog/index/${ cat.id | h}" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
                     %endfor
                 </ul>

@@ -17,7 +17,7 @@ def process_request(request, id):
 
     context = {
         'product': product,
-        'list': c_list,
+        'c_list': c_list,
         'urls': urls,
         jscontext('url'): url,
     }
