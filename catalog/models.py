@@ -61,6 +61,7 @@ class Product(PolymorphicModel):
             url = Product.image_urls(p1.id)[0]
         return url
 
+
 class BulkProduct(Product):
     TITLE = 'BulkProduct'
     reorder_trigger = models.IntegerField()
@@ -82,6 +83,7 @@ class RentalProduct(Product):
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.CASCADE)
     filename = models.TextField()
+
 
 class Order(models.Model):
     '''An order in the system'''
@@ -108,19 +110,24 @@ class Order(models.Model):
         '''Prints for debugging purposes'''
         return 'Order {}: {}: {}'.format(self.id, self.user.get_full_name(), self.total_price)
 
-
     def active_items(self, include_tax_item=True):
-        '''Returns the active items on this order'''
+        """Returns the active items on this order"""
         # create a query object (filter to status='active')
-
+        items = []
+        for item in OrderItem.objects.filter(order=self, status='active'):
+            if include_tax_item:
+                items.append(item)
+            else:
+                if item.product.name != 'Tax Item':
+                    items.append(item)
         # if we aren't including the tax item, alter the
         # query to exclude that OrderItem
         # I simply used the product name (not a great choice,
         # but it is acceptable for credit)
-
+        return items
 
     def get_item(self, product, create=False):
-        '''Returns the OrderItem object for the given product'''
+        """Returns the OrderItem object for the given product"""
         item = OrderItem.objects.filter(order=self, product=product).first()
         if item is None and create:
             item = OrderItem.objects.create(order=self, product=product, price=product.price, quantity=0)
@@ -131,34 +138,42 @@ class Order(models.Model):
         item.save()
         return item
 
-
     def num_items(self):
         '''Returns the number of items in the cart'''
         return sum(self.active_items(include_tax_item=False).values_list('quantity', flat=True))
 
-
     def recalculate(self):
-        '''
-        Recalculates the total price of the order,
-        including recalculating the taxable amount.
-
+        """
+        Recalculates the total price of the order, including recalculating the taxable amount.
         Saves this Order and all child OrderLine objects.
-        '''
+        """
+
         # iterate the order items (not including tax item) and get the total price
+        items = self.active_items(include_tax_item=False)
         # call recalculate on each item
-
+        price = []
+        for item in items:
+            price.append(OrderItem.recalculate(item))
         # update/create the tax order item (calculate at 7% rate)
-
+        total_price = 0
+        for ind in price:
+            total_price = total_price + ind
+        tax = total_price * 0.07
         # update the total and save
-
+        self.total_price = total_price + tax
+        self.save()
 
     def finalize(self, stripe_charge_token):
         '''Runs the payment and finalizes the sale'''
         with transaction.atomic():
+
             # recalculate just to be sure everything is updated
-
+            self.recalculate()
             # check that all products are available
-
+            for item in self.active_items(include_tax_item=False):
+                new_item = self.get_item(item)
+                if new_item.quantity > item.product.quantity:
+                    raise ValueError('There are not enough products to fulfil this order.')
             # contact stripe and run the payment (using the stripe_charge_token)
 
             # finalize (or create) one or more payment objects
@@ -188,15 +203,18 @@ class OrderItem(PolymorphicModel):
         return 'OrderItem {}: {}: {}'.format(self.id, self.product.name, self.extended)
 
 
-    def recalculate(self):
+    def recalculate(self, item):
         '''Updates the order item's price, quantity, extended'''
         # update the price if it isn't already set and we have a product
-
+        item_price = item.price
+        item_quan = item.quantity
         # default the quantity to 1 if we don't have a quantity set
-
+        if item_quan is None:
+            item_quan = 1
         # calculate the extended (price * quantity)
-
+        self.extended = item_quan * item_price
         # save the changes
+        self.save()
 
 
 class Payment(models.Model):
