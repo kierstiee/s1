@@ -1,5 +1,6 @@
 from django.db import models
 from cuser.models import AbstractCUser
+from catalog import models as cmod
 
 
 class User(AbstractCUser):
@@ -11,3 +12,7 @@ class User(AbstractCUser):
 
     def get_purchases(self):
         return ['Roku Unlimited', 'Skis', 'Computer']
+
+    def get_shopping_cart(self):
+        order = cmod.Order.objects.filter(user=self, status='cart')
+        # if order is None:

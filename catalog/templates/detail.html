@@ -19,13 +19,13 @@
         </div>
         <h2>${ product.description | h}</h2>
         %if product.TITLE == 'BulkProduct':
-            <form>
+            <form id="buy" action="/catalog/cart/${ product.id }/quantity/">
                 Quantity:
                 <input type="number" name="quantity" min="1" value = "1">
                 <input type="submit" class="btn btn-primary" role="button" name="buy" value="Buy Now">
             </form>
         %else:
-            <a class="btn btn-primary" role="button">Buy Now!</a>
+            <a id="buy_button" class="btn btn-primary" role="button">Buy Now!</a>
         %endif
     </div>
 </%block>

@@ -117,11 +117,10 @@ class Order(models.Model):
         for item in OrderItem.objects.filter(order=self, status='active'):
             if include_tax_item:
                 items.append(item)
-            else:
+            else: # if we aren't including the tax item, alter the query to exclude that OrderItem
                 if item.product.name != 'Tax Item':
                     items.append(item)
-        # if we aren't including the tax item, alter the
-        # query to exclude that OrderItem
+
         # I simply used the product name (not a great choice,
         # but it is acceptable for credit)
         return items
