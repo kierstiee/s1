@@ -1,0 +1,12 @@
+<%inherit file="app_base.htm" />
+
+<%block name="content">
+    <div class="content">
+
+        <form id="search" align="right" action="/catalog/search/">
+            <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+            <button class="searchbutton" type="submit">Search</button>
+        </form>
+        <div id="products"></div>
+    </div>
+</%block>

@@ -14,5 +14,7 @@ class User(AbstractCUser):
         return ['Roku Unlimited', 'Skis', 'Computer']
 
     def get_shopping_cart(self):
-        order = cmod.Order.objects.filter(user=self, status='cart')
-        # if order is None:
+        order = cmod.Order.objects.filter(user=self, status='cart').first()
+        if order is None:
+            order = cmod.Order.objects.create(user=self, status='cart')
+        return order

@@ -133,7 +133,7 @@ class Order(models.Model):
         elif create and item.status != 'active':
             item.status = 'active'
             item.quantity = 0
-        item.recalculate()
+        item.recalculate(item)
         item.save()
         return item
 
