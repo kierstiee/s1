@@ -101,5 +101,5 @@ a.selected {
 }
 
 #cart {
-    align: right;
+    float: right;
 }

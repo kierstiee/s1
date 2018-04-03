@@ -1,9 +1,10 @@
 from django.conf import settings
-from django_mako_plus import view_function, jscontext
 from datetime import datetime, timezone
-from django.http import HttpResponseRedirect
 from catalog import models as cmod
+from django.http import HttpResponseRedirect
 from formlib import Formless
+from django_mako_plus import view_function, jscontext
+from django import forms
 from account import models as amod
 
 
@@ -19,14 +20,14 @@ def process_request(request, id):
         products.remove(product)
     request.last_five = [product] + request.last_five
 
-    if product.category == 'BulkProduct':
+    if product.TITLE == 'BulkProduct':
         form = AddBulkProduct(request, product=product, user=user)
     else:
         form = AddProduct(request, product=product, user=user)
 
-    if form.is_valid:
+    if form.is_valid():
         form.commit()
-        return HttpResponseRedirect('/catalog/detail/')
+        return HttpResponseRedirect('/catalog/cart/')
 
     context = {
         'product': product,
@@ -45,7 +46,7 @@ class AddBulkProduct(Formless):
         super(AddBulkProduct, self).__init__(*args, **kwargs)
 
     def init(self):
-        self.fields['quantity'] = forms.IntegerField(label='Quantity')
+        self.fields['quantity']=forms.IntegerField(label="Quantity of Order")
 
     def clean(self):
         q1 = self.cleaned_data.get('quantity')
@@ -72,7 +73,27 @@ class AddProduct(Formless):
     def commit(self):
         product = self.product
         user = self.user
-        order = amod.User.get_shopping_cart(self.user)
+        order = amod.User.get_shopping_cart(user)
         item = cmod.Order.get_item(order, product, create=True)
         item.quantity = 1
         item.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
