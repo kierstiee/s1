@@ -40,27 +40,32 @@ def process_request(request, id):
 
 
 class AddBulkProduct(Formless):
-
     def __init__(self, *args, **kwargs):
         self.product = kwargs.pop('product')
         super(AddBulkProduct, self).__init__(*args, **kwargs)
+        self.item = cmod.Order.get_item(self, self.product, create=True)
 
     def init(self):
         self.fields['quantity']=forms.IntegerField(label="Quantity of Order")
 
     def clean(self):
         q1 = self.cleaned_data.get('quantity')
+        order = amod.User.get_shopping_cart(self.user)
+        order_items = cmod.Order.active_items(order, include_tax_item=False)
+        q2=0
+        for item in order_items:
+            if item.product.name == self.product.name:
+                q2=q2+item.product.quantity
         if q1:
-            if q1 > self.product.quantity:
+            if q1+q2 < self.product.quantity:
                 return self.cleaned_data
             else: raise forms.ValidationError('There are not enough to fulfill this order. Please try again later.')
         else: raise forms.ValidationError('Please enter enter a quantity')
 
     def commit(self):
         q1 = self.cleaned_data.get('quantity')
-        item = cmod.Order.get_item(self, self.product, create=True)
-        item.quantity = q1
-        item.save()
+        self.item.quantity = q1
+        self.item.save()
 
 
 class AddProduct(Formless):
@@ -70,6 +75,16 @@ class AddProduct(Formless):
         self.user = kwargs.pop('user')
         super(AddProduct, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        order = amod.User.get_shopping_cart(self.user)
+        order_items = cmod.Order.active_items(order, include_tax_item=False)
+        for item in order_items:
+            if item.product.id == self.product.id:
+                raise forms.ValidationError('This item is already in your cart. Please select another item.')
+            elif item.product.quantity < 1:
+                raise forms.ValidationError('This item is no longer available. Please select another item.')
+            else: return
+
     def commit(self):
         product = self.product
         user = self.user
@@ -77,23 +92,3 @@ class AddProduct(Formless):
         item = cmod.Order.get_item(order, product, create=True)
         item.quantity = 1
         item.save()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
