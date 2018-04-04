@@ -2,11 +2,16 @@
 
 <%block name="content">
     <div class="content">
-
-        <form id="search" align="right" action="/catalog/search/">
-            <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-            <button class="searchbutton" type="submit">Search</button>
-        </form>
-        <div id="products"></div>
+        <ul>
+            %for item in active:
+                <li class="item">
+                    ${ item.product.name }
+                    ${ item.product.quantity }
+                    $${ item.price }
+                    ${ item.extended }
+                    <a href="/catalog/delete/">Delete</a>
+                </li>
+            %endfor
+        </ul>
     </div>
 </%block>

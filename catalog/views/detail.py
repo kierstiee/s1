@@ -70,6 +70,8 @@ class AddProduct(Formless):
         self.user = kwargs.pop('user')
         super(AddProduct, self).__init__(*args, **kwargs)
 
+
+
     def commit(self):
         product = self.product
         user = self.user
