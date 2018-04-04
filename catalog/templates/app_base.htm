@@ -1,6 +1,5 @@
 <%inherit file="/homepage/templates/base.htm" />
 <%! from catalog import models as cmod %>
-<%! from account import models as amod %>
 
 <%block name="maintenance">
     <h4 align="center">We're currently upgrading our site for your benefit</h4>
@@ -98,9 +97,8 @@
                         </li>
                     % endif
                 </ul>
-                <% order = amod.User.get_shopping_cart(request.user) %>
-
-                <a href="/catalog/cart/" type="button" id="cart">${ 1 }</a>
+                <% value= 0%>
+                <a href="/catalog/cart/" type="button" id="cart">${ value or "0" }</a>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>

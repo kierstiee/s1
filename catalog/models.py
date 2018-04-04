@@ -115,26 +115,24 @@ class Order(models.Model):
         # create a query object (filter to status='active')
         items = []
         for item in OrderItem.objects.filter(order=self, status='active'):
-            if item.product.name != 'Tax Item':
+            if include_tax_item:
                 items.append(item)
-                if include_tax_item:
+            else: # if we aren't including the tax item, alter the query to exclude that OrderItem
+                if item.product.name != 'Tax Item':
                     items.append(item)
-        if items is not None:
-            return items
-        else:
-            return 0
+
+        # I simply used the product name (not a great choice,
+        # but it is acceptable for credit)
+        return items
 
     def get_item(self, product, create=False):
-        '''Returns the OrderItem object for the given product'''
-        item = OrderItem.objects.filter(self, product).first()
+        """Returns the OrderItem object for the given product"""
+        item = OrderItem.objects.filter(order=self, product=product).first()
         if item is None and create:
             item = OrderItem.objects.create(order=self, product=product, price=product.price, quantity=0)
         elif create and item.status != 'active':
             item.status = 'active'
             item.quantity = 0
-        if item is not None:
-            item.recalculate()
-            item.save()
         item.recalculate(item)
         item.save()
         return item

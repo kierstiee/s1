@@ -4,17 +4,14 @@ from datetime import datetime, timezone
 from catalog import models as cmod
 from formlib import Formless
 import math
-from account import models as amod
 
 
 @view_function
-def process_request(request):
+def process_request(request, id=0, quantity=1):
     c_list = cmod.Category.objects.all()
-    order = amod.User.get_shopping_cart(request.user)
-    active_items = cmod.Order.active_items(order, include_tax_item=True)
+    # product = cmod.Product.objects.get(id=id)
     context = {
         # sent to index.html:
         'c_list': c_list,
-        'active_items': active_items,
     }
     return request.dmp.render('cart.html', context)
