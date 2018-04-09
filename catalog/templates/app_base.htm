@@ -97,8 +97,8 @@
                         </li>
                     % endif
                 </ul>
-                <% value= 0%>
-                <a href="/catalog/cart/" type="button" id="cart">${ value or "0" }</a>
+                <% value= cmod.Order.num_items(order)%>
+                <a href="/catalog/cart/" class="btn btn-primary" id="cart">${ value or None }</a>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>

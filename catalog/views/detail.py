@@ -29,12 +29,22 @@ def process_request(request, id):
         form.commit()
         return HttpResponseRedirect('/catalog/cart/')
 
+    quan1 = 0
+    order = amod.User.get_shopping_cart(request.user)
+    active = cmod.Order.active_items(order, include_tax_item=False)
+    for item in active:
+        if item == product:
+            quan1 = quan1 + item.quantity
+
+
     context = {
         'product': product,
         'c_list': c_list,
         'urls': urls,
         jscontext('url'): url,
         'form': form,
+        'q1': quan1,
+        'order': order,
     }
     return request.dmp.render('detail.html', context)
 
@@ -43,6 +53,7 @@ class AddBulkProduct(Formless):
 
     def __init__(self, *args, **kwargs):
         self.product = kwargs.pop('product')
+        self.user = kwargs.pop('user')
         super(AddBulkProduct, self).__init__(*args, **kwargs)
 
     def init(self):
@@ -50,17 +61,33 @@ class AddBulkProduct(Formless):
 
     def clean(self):
         q1 = self.cleaned_data.get('quantity')
+        order = amod.User.get_shopping_cart(self.user)
+        active = cmod.Order.active_items(order, include_tax_item=False)
+        q2 = 0
+        for item in active:
+            if self.product == item:
+                q2 = q2 + item.quantity
+        q3 = q2 + self.product.quantity
         if q1:
-            if q1 > self.product.quantity:
+            if q1 < self.product.quantity:
                 return self.cleaned_data
             else: raise forms.ValidationError('There are not enough to fulfill this order. Please try again later.')
-        else: raise forms.ValidationError('Please enter enter a quantity')
+        else: raise forms.ValidationError('Please enter a quantity')
 
     def commit(self):
         q1 = self.cleaned_data.get('quantity')
-        item = cmod.Order.get_item(self, self.product, create=True)
+        # order = amod.User.get_shopping_cart(self.user)
+        # active = cmod.Order.active_items(order, include_tax_item=False)
+        # for item in active:
+        #     if self.product == item:
+        #         q1 = q1 + item.quantity
+        product = self.product
+        order = amod.User.get_shopping_cart(self.user)
+        item = cmod.Order.get_item(order, self.product, create=True)
         item.quantity = q1
         item.save()
+        product.quantity = product.quantity - q1
+        product.save()
 
 
 class AddProduct(Formless):
@@ -70,8 +97,6 @@ class AddProduct(Formless):
         self.user = kwargs.pop('user')
         super(AddProduct, self).__init__(*args, **kwargs)
 
-
-
     def commit(self):
         product = self.product
         user = self.user
@@ -79,23 +104,5 @@ class AddProduct(Formless):
         item = cmod.Order.get_item(order, product, create=True)
         item.quantity = 1
         item.save()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        product.status = 'I'
+        product.save()

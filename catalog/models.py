@@ -120,7 +120,6 @@ class Order(models.Model):
             else: # if we aren't including the tax item, alter the query to exclude that OrderItem
                 if item.product.name != 'Tax Item':
                     items.append(item)
-
         # I simply used the product name (not a great choice,
         # but it is acceptable for credit)
         return items
@@ -133,13 +132,16 @@ class Order(models.Model):
         elif create and item.status != 'active':
             item.status = 'active'
             item.quantity = 0
-        item.recalculate(item)
+        item.recalculate()
         item.save()
         return item
 
     def num_items(self):
         '''Returns the number of items in the cart'''
-        return sum(self.active_items(include_tax_item=False).values_list('quantity', flat=True))
+        quantity = 0
+        for item in self.active_items(include_tax_item=False):
+            quantity = quantity + item.quantity
+        return quantity
 
     def recalculate(self):
         """
@@ -150,14 +152,13 @@ class Order(models.Model):
         # iterate the order items (not including tax item) and get the total price
         items = self.active_items(include_tax_item=False)
         # call recalculate on each item
-        price = []
         for item in items:
-            price.append(OrderItem.recalculate(item))
+            item.recalculate()
         # update/create the tax order item (calculate at 7% rate)
         total_price = 0
-        for ind in price:
-            total_price = total_price + ind
-        tax = total_price * 0.07
+        for ind in items:
+            total_price = total_price + ind.extended
+        tax = total_price * Decimal(0.07)
         # update the total and save
         self.total_price = total_price + tax
         self.save()
@@ -202,11 +203,11 @@ class OrderItem(PolymorphicModel):
         return 'OrderItem {}: {}: {}'.format(self.id, self.product.name, self.extended)
 
 
-    def recalculate(self, item):
+    def recalculate(self):
         '''Updates the order item's price, quantity, extended'''
         # update the price if it isn't already set and we have a product
-        item_price = item.price
-        item_quan = item.quantity
+        item_price = self.price
+        item_quan = self.quantity
         # default the quantity to 1 if we don't have a quantity set
         if item_quan is None:
             item_quan = 1

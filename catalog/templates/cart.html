@@ -2,16 +2,31 @@
 
 <%block name="content">
     <div class="content">
-        <ul>
+        <ul class="item">
             %for item in active:
-                <li class="item">
-                    ${ item.product.name }
-                    ${ item.product.quantity }
-                    $${ item.price }
-                    ${ item.extended }
-                    <a href="/catalog/delete/">Delete</a>
+                <li>
+                    <div id="name" style="float:left; width:30%"> ${ item.product.name } </div>
+                    <div id="quantity" style="float:left; width:10%"> ${ item.quantity }</div>
+                    <div id="price" style="float:left; width:25%"> $${ item.price }</div>
+                    <div id="extended" style="float:left; width:25%">$${ item.extended }</div>
+                    <div id="delete" style="float:right; width:10%"><a href="/catalog/delete/${ item.id }">Remove</a></div>
                 </li>
             %endfor
+            <li>
+                <b>
+                    <div id="tax" style="float:left; width:50%">Tax</div>
+                    <div id="tax_price" style="float:right; width:20%">${ tax } </div>
+                </b>
+            </li>
+            <li>
+                <b>
+                    <div id="total" style="float:left; width:50%">Order Total</div>
+                    <div id="total_price" style="float:right; width:20%">${ total }</div>
+                </b>
+            </li>
+            <li>
+                <a href="/catalog/checkout/" class="btn btn-primary" role="button" style="float:right; width:100%">Checkout</a>
+            </li>
         </ul>
     </div>
 </%block>

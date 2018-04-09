@@ -18,6 +18,9 @@
             <img alt="${ product.name }" id="first_pic">
         </div>
         <h2>${ product.description | h}</h2>
+        %if product.TITLE == 'BulkProduct':
+            <h3>${ product.quantity-q1 } available.</h3>
+        %endif
         <form method="POST">
             ${ csrf_input }
             ${ form.as_p() }
