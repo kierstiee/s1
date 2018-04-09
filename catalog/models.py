@@ -86,7 +86,7 @@ class ProductImage(models.Model):
 
 
 class Order(models.Model):
-    '''An order in the system'''
+    """An order in the system"""
     STATUS_CHOICES = (
         ( 'cart', 'Shopping Cart' ),
         ( 'payment', 'Payment Processing' ),
@@ -107,7 +107,7 @@ class Order(models.Model):
     ship_zip_code = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        '''Prints for debugging purposes'''
+        """Prints for debugging purposes"""
         return 'Order {}: {}: {}'.format(self.id, self.user.get_full_name(), self.total_price)
 
     def active_items(self, include_tax_item=True):
@@ -137,7 +137,7 @@ class Order(models.Model):
         return item
 
     def num_items(self):
-        '''Returns the number of items in the cart'''
+        """Returns the number of items in the cart"""
         quantity = 0
         for item in self.active_items(include_tax_item=False):
             quantity = quantity + item.quantity
@@ -164,7 +164,7 @@ class Order(models.Model):
         self.save()
 
     def finalize(self, stripe_charge_token):
-        '''Runs the payment and finalizes the sale'''
+        """Runs the payment and finalizes the sale"""
         with transaction.atomic():
 
             # recalculate just to be sure everything is updated
@@ -185,7 +185,7 @@ class Order(models.Model):
 
 
 class OrderItem(PolymorphicModel):
-    '''A line item on an order'''
+    """A line item on an order"""
     STATUS_CHOICES = (
         ( 'active', 'Active' ),
         ( 'deleted', 'Deleted' ),
@@ -199,12 +199,11 @@ class OrderItem(PolymorphicModel):
     extended = models.DecimalField(max_digits=8, decimal_places=2, default=0) # max number is 999,999.99
 
     def __str__(self):
-        '''Prints for debugging purposes'''
+        """Prints for debugging purposes"""
         return 'OrderItem {}: {}: {}'.format(self.id, self.product.name, self.extended)
 
-
     def recalculate(self):
-        '''Updates the order item's price, quantity, extended'''
+        """Updates the order item's price, quantity, extended"""
         # update the price if it isn't already set and we have a product
         item_price = self.price
         item_quan = self.quantity
@@ -218,7 +217,7 @@ class OrderItem(PolymorphicModel):
 
 
 class Payment(models.Model):
-    '''A payment on a sale'''
+    """A payment on a sale"""
     order = models.ForeignKey(Order, null=True, on_delete=models.CASCADE)
     payment_date = models.DateTimeField(null=True, blank=True)
     amount = models.DecimalField(blank=True, null=True, max_digits=8, decimal_places=2) # max number is 999,999.99

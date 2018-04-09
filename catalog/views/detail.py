@@ -6,8 +6,10 @@ from formlib import Formless
 from django_mako_plus import view_function, jscontext
 from django import forms
 from account import models as amod
+from django.contrib.auth.decorators import permission_required
 
 
+# @permission_required(cmod.Product.objects.all())
 @view_function
 def process_request(request, id):
     product = cmod.Product.objects.get(id=id)
@@ -77,17 +79,17 @@ class AddBulkProduct(Formless):
     def commit(self):
         q1 = self.cleaned_data.get('quantity')
         # order = amod.User.get_shopping_cart(self.user)
-        # active = cmod.Order.active_items(order, include_tax_item=False)
-        # for item in active:
-        #     if self.product == item:
-        #         q1 = q1 + item.quantity
         product = self.product
+        product.quantity = product.quantity - q1
+        product.save()
         order = amod.User.get_shopping_cart(self.user)
+        active = cmod.Order.active_items(order, include_tax_item=False)
+        for item in active:
+            if product == item.product:
+                q1 = q1 + item.quantity
         item = cmod.Order.get_item(order, self.product, create=True)
         item.quantity = q1
         item.save()
-        product.quantity = product.quantity - q1
-        product.save()
 
 
 class AddProduct(Formless):
