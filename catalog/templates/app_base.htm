@@ -20,6 +20,23 @@
                         <li><a href="/catalog/index/${ cat.id | h}" class="${ 'selected' if category == cat else ''  }">${ cat }</a></li>
                     %endfor
                 </ul>
+                <br>
+                <br>
+                <form id="search" action="/catalog/search/ProductSearch/">
+                    <label for="category" style="float:left">Category:</label>
+                    <input class="searchfield" id="cat_search" name="category" type="text" style="float:right">
+                    <br><br>
+                    <label for="name" style="float:left">Product:</label>
+                    <input class="searchfield" id="name_search" name="name" type="text" style="float:right">
+                    <br><br>
+                    <label for="price" style="float:left">Price:</label>
+                    <input class="searchfield" id="price_search" name="price" type="text" style="float:right">
+                    <br><br>
+                    <label for="page" style="float:left">Page Number:</label>
+                    <input class="searchfield" id="pagenum" name="page" type="number" value="1" style="float:right">
+                    <br><br>
+                    <button class="searchbutton" type="submit">Search</button>
+                </form>
             </%block>
         </div>
         <div id="content_right">

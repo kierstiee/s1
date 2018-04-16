@@ -36,7 +36,6 @@ def process_request(request, id=0):
     }
     return request.dmp.render('index.html', context)
 
-
 @view_function
 def products(request, cat:cmod.Category=None, pnum:int=0):
     qry = cmod.Product.objects.all()
