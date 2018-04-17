@@ -69,7 +69,6 @@ class AddBulkProduct(Formless):
         for item in active:
             if self.product == item:
                 q2 = q2 + item.quantity
-        q3 = q2 + self.product.quantity
         if q1:
             if q1 < self.product.quantity:
                 return self.cleaned_data
@@ -79,8 +78,6 @@ class AddBulkProduct(Formless):
     def commit(self):
         q1 = self.cleaned_data.get('quantity')
         product = self.product
-        product.quantity = product.quantity - q1
-        product.save()
         order = amod.User.get_shopping_cart(self.user)
         active = cmod.Order.active_items(order, include_tax_item=False)
         for item in active:

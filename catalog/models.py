@@ -188,7 +188,7 @@ class Order(models.Model):
             self.status = 'Payment'
             # update product quantities for BulkProducts
             for item in OrderItem.objects.filter(order=self, status='active'):
-                if item.product.TYPE_CHOICES == 'BulkProducts':
+                if item.product.TITLE == 'BulkProducts':
                     item.product.quantity = item.product.quantity - item.quantity
             # update status for IndividualProducts
                 else:
