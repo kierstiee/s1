@@ -3,22 +3,11 @@
 <%block name="content">
     <div class="content">
         <h2>Total: ${ total }</h2>
-        ${ csrf_input }
-        <form id="addresses" method="post">
-            <input type="hidden" name="csrfmiddlewaretoken" value="">
-            <p>
-                <label for="id_address">Address:</label>
-                <input type="text" name="address" class="form-control" id="id_address" required>
-            </p>
-            <p>
-                <label for="id_state">State</label>
-                <input type="text" name="address" class="form-control" id="id_state" required>
-            </p>
-            <p>
-                <label for="id_zip">Zip</label>
-                <input type="text" name="address" class="form-control" id="id_zip" required>
-            </p>
-            <form action="/catalog/thanks/" method="POST">
+        <form method="POST">
+            ${ csrf_input }
+            ${ form.as_p() }
+            <form method="POST">
+                ${ csrf_input }
                 <script
                     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                     data-key="pk_test_5rwmuuIfnooPecBafks6lKOg"
@@ -27,7 +16,8 @@
                     data-description="Checkout"
                     data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
                     data-locale="auto"
-                    data-label="Pay Now">
+                    data-label="Pay Now"
+                    >
                 </script>
             </form>
         </form>

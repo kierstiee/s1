@@ -171,20 +171,19 @@ class Order(models.Model):
             self.recalculate()
             # check that all products are available
             for item in self.active_items(include_tax_item=False):
-                new_item = self.get_item(item)
+                new_item = self.get_item(item.product)
                 if new_item.quantity > item.product.quantity:
                     raise ValueError('There are not enough products to fulfil this order.')
             # contact stripe and run the payment (using the stripe_charge_token)
             valid_code = stripe_charge_token
             stripe.api_key = 'sk_test_2qwWAGwOAKTUiaeS3OAtqJ9f'
             charge = stripe.Charge.create(
-                amount = self.total_price * 100,
+                amount = int(self.total_price * 100),
                 currency = 'usd',
-                description = self.user + datetime.now(),
-                source = valid_code,A
+                source = valid_code
             )
             # finalize (or create) one or more payment objects
-            Payment.objects.create(order=self,payment_date=datetime.now,amount=self.total_price, validation_code = valid_code)
+            Payment.objects.create(order=self,payment_date=datetime.now(),amount=self.total_price, validation_code = valid_code)
             # set order status to sold and save the order
             self.status = 'Payment'
             # update product quantities for BulkProducts
@@ -219,7 +218,7 @@ class OrderItem(PolymorphicModel):
         """Updates the order item's price, quantity, extended"""
         # update the price if it isn't already set and we have a product
         item_price = self.price
-        item_quan = self.quantity
+        item_quan = Decimal(self.quantity)
         # default the quantity to 1 if we don't have a quantity set
         if item_quan is None:
             item_quan = 1
