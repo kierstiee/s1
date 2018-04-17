@@ -78,7 +78,6 @@ class AddBulkProduct(Formless):
 
     def commit(self):
         q1 = self.cleaned_data.get('quantity')
-        # order = amod.User.get_shopping_cart(self.user)
         product = self.product
         product.quantity = product.quantity - q1
         product.save()

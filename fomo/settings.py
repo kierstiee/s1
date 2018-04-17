@@ -254,3 +254,6 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = '/homepage/index/'
+
+STRIPE_PUBLIC_KEY = os.environ.get("STRIPE_PUBLIC_KEY", "pk_test_5rwmuuIfnooPecBafks6lKOg")
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_test_2qwWAGwOAKTUiaeS3OAtqJ9f")
