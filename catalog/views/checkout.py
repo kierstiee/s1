@@ -69,5 +69,9 @@ class ShippingClass(Formless):
         order.ship_city = self.cleaned_data.get('city')
         order.ship_state = self.cleaned_data.get('state')
         order.ship_zip_code = self.cleaned_data.get('zip')
-        order.finalize(self.cleaned_data.get('stripeToken'))
+        try:
+            order.finalize(self.cleaned_data.get('stripeToken'))
+        except:
+            raise forms.ValidationError("Didn't work")
+            traceback.print_exc()
         order.save()
